@@ -1,0 +1,120 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  image-p3.yml
+#
+
+#
+# This playbook deploys the configuration to the root partition (p3)
+# of the core image.
+#
+
+
+- name: Turn on journaling for /dev/mmcblk0p3
+  blockinfile:
+    path: "{{temp}}/p3/etc/rc.d/init.d/partresize"
+    insertbefore: '^\s*# Enable journal'
+    marker: "### {mark} FireMyPi Managed Block ###"
+    block: |
+      if [ "${dev}" = "/dev/mmcblk0p3" ]; then
+        journal="on"
+      fi
+  become: true
+  when: enable_journaling
+
+- name: Get the root password
+  include_vars:
+    file: "{{builddir}}/secrets/root-secret.yml"
+
+- name: Install the root password
+  replace:
+    path: "{{temp}}/p3/etc/shadow"
+    regexp: "^root:(?<=:)[^:]+(?=:)"
+    replace: "root:{{rootsecret}}"
+  become: true
+
+- name: Install the config payload for the root directory
+  copy:
+    src: "{{config_file}}"
+    dest: "{{temp}}/p3/root"
+    mode: '400'
+    owner: root
+  become: true
+
+- name: Install the firemypi-configure script in init.d
+  template:
+    src: "{{builddir}}/resource/firemypi-configure.j2"
+    dest: "{{temp}}/p3/etc/rc.d/init.d/firemypi-configure"
+    mode: '744'
+  become: true
+
+# Install trigger for firemypi-configure script in rcsysinit.d.
+# The configuration script is linked as S75firemypi-configure and will run just
+# before the S75firstsetup script due to the alphabetic order of the scripts.
+# Relative path name is used here so that the link is valid on the final system.
+- name: Link S75firemypi-configure in rcsysinit.d
+  file:
+    src: "../init.d/firemypi-configure"
+    dest: "{{temp}}/p3/etc/rc.d/rcsysinit.d/S75firemypi-configure"
+    state: link
+  become: true
+
+- name: Install the monitor-red0 script in init.d
+  template:
+    src: "{{builddir}}/resource/monitor-red0-init.j2"
+    dest: "{{temp}}/p3/etc/rc.d/init.d/monitor-red0"
+    mode: '744'
+  become: true
+
+- name: Link K42monitor-red0 in rc0.d
+  file:
+    src: "../init.d/monitor-red0"
+    dest: "{{temp}}/p3/etc/rc.d/rc0.d/K42monitor-red0"
+    state: link
+  become: true
+
+- name: Link S42monitor-red0 in rc3.d
+  file:
+    src: "../init.d/monitor-red0"
+    dest: "{{temp}}/p3/etc/rc.d/rc3.d/S42monitor-red0"
+    state: link
+  become: true
+
+- name: Link K42monitor-red0 in rc6.d
+  file:
+    src: "../init.d/monitor-red0"
+    dest: "{{temp}}/p3/etc/rc.d/rc6.d/K42monitor-red0"
+    state: link
+  become: true
+
+- name: Install the ipblocklist-fwreload script in init.d
+  template:
+    src: "{{builddir}}/resource/ipblocklist-fwreload-init.j2"
+    dest: "{{temp}}/p3/etc/rc.d/init.d/ipblocklist-fwreload"
+    mode: '744'
+  become: true
+
+- name: Link S43ipblocklist-fwreload in rc3.d
+  file:
+    src: "../init.d/ipblocklist-fwreload"
+    dest: "{{temp}}/p3/etc/rc.d/rc3.d/S43ipblocklist-fwreload"
+    state: link
+  become: true
+
+- name: Sync filesystem
+  command: sync
+
+...

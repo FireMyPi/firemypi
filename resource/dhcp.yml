@@ -1,0 +1,102 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  dhcp.yml
+#
+
+#
+# This playbook creates the dhcp configuration from static leases specified
+# in the nodeN_vars.yml file and nodeN.fixleases files.
+#
+
+
+- name: Create dhcp directory
+  file:
+    dest: "{{var_ipfire}}/dhcp"
+    state: directory
+
+- name: Create fixed leases as specified in node vars
+  lineinfile:
+    create: true
+    path: "{{var_ipfire}}/dhcp/fixleases.fragment1"
+    line: "{{item.macid}},{{item.ip}},on,,,,{{item.host}}"
+  loop: "{{dhcp_static}}"
+  when: dhcp_static_enabled
+
+- name: Check if fixleases file exists
+  stat:
+    path: "{{builddir}}/config/{{prefix}}{{node}}.fixleases"
+  register: result
+
+- name: Copy fixed leases from fixleases file
+  copy:
+    src: "{{builddir}}/config/{{prefix}}{{node}}.fixleases"
+    dest: "{{var_ipfire}}/dhcp/fixleases.fragment2"
+  when: result.stat.exists
+
+- name: Assemble fixleases file
+  assemble:
+    src: "{{var_ipfire}}/dhcp"
+    dest: "{{var_ipfire}}/dhcp/fixleases"
+
+- name: Clean up fragment files
+  file:
+    path: "{{var_ipfire}}/dhcp/fixleases.fragment1"
+    state: absent
+
+- name: Clean up fragment files
+  file:
+    path: "{{var_ipfire}}/dhcp/fixleases.fragment2"
+    state: absent
+
+# Note: Create settings file after fixleases to prevent settings from
+#       getting included in fixleases by the assemble.
+- name: Create DHCP settings file
+  template:
+    src: "{{builddir}}/resource/dhcp-settings.j2"
+    dest: "{{var_ipfire}}/dhcp/settings"
+
+- name: Create dhcpd.conf file
+  template:
+    src: "{{builddir}}/resource/dhcp-conf-header.j2"
+    dest: "{{var_ipfire}}/dhcp/dhcpd.conf"
+
+- name: Read dhcp fixlease CSV file
+  read_csv:
+    path: "{{var_ipfire}}/dhcp/fixleases"
+    fieldnames: mac,ip,onoff,ef1,ef2,ef3,name
+  register: leases
+
+- name: Add fixed leases to dhcpd.conf
+  blockinfile:
+    path: "{{var_ipfire}}/dhcp/dhcpd.conf"
+    marker: ""
+    block: |
+      host fix{{ansible_loop.index0}} # {{item.name}}
+      {
+        hardware ethernet {{item.mac}};
+        fixed-address {{item.ip}};
+      }
+  loop: "{{leases.list}}"
+  loop_control:
+    extended: true
+
+- name: Add trailer to dhcpd.conf
+  lineinfile:
+    path: "{{var_ipfire}}/dhcp/dhcpd.conf"
+    line: include "/var/ipfire/dhcp/dhcpd.conf.local";
+
+...

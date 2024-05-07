@@ -1,0 +1,125 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  ddns.yml
+#
+
+#
+# This playbook creates the Dynamic DNS configuration based on the
+# ddns_auth_method.
+#
+
+
+- name: ddns - get settings
+  include_vars:
+    file: "{{builddir}}/secrets/ddns-secret.yml"
+
+#
+# Create ddns config for keypair authentication
+#
+- name: ddns - create directory
+  file:
+    path: "{{targetdir}}/root/ddns"
+    state: directory
+  when: ddns_auth_method == "keypair"
+
+- name: ddns - copy key files
+  copy:
+    src: "{{builddir}}/secrets/K{{domain}}.+157+{{ddns_keyid}}.key"
+    dest: "{{targetdir}}/root/ddns"
+    mode: '600'
+  when: ddns_auth_method == "keypair"
+
+- name: ddns - copy key files
+  copy:
+    src: "{{builddir}}/secrets/K{{domain}}.+157+{{ddns_keyid}}.private"
+    dest: "{{targetdir}}/root/ddns"
+    mode: '600'
+  when: ddns_auth_method == "keypair"
+
+- name: ddns - copy update script
+  template:
+    src: "{{builddir}}/resource/ddns-updDynDNS.j2"
+    dest: "{{targetdir}}/root/ddns/updDynDNS"
+    mode: '744'
+  when: ddns_auth_method == "keypair"
+
+#
+# Create ddns config for token authentication
+#
+- name: ddns - create directory
+  file:
+    path: "{{var_ipfire}}/ddns"
+    state: directory
+  when: ddns_auth_method == "token"
+
+- name: ddns - create ddns.conf file
+  blockinfile:
+    block: |
+      [config]
+      guess_external_ip = false
+      
+      [{{ddns_provider}}]
+      provider = {{ddns_provider}}
+      token = {{ddns_token}}
+    path: "{{var_ipfire}}/ddns/ddns.conf"
+    marker: "### {mark} FireMyPi Managed Block ###"
+    create: true
+    mode: '644'
+  when: ddns_auth_method == "token"
+
+- name: ddns - create config file
+  lineinfile:
+    line: "{{ddns_provider}},{{firemypi_fqdn}},,,,,{{ddns_token}},on"
+    path: "{{var_ipfire}}/ddns/config"
+    create: true
+    mode: '644'
+  when: ddns_auth_method == "token"
+
+#
+# Create ddns config for userpass authentication
+#
+- name: ddns - create directory
+  file:
+    path: "{{var_ipfire}}/ddns"
+    state: directory
+  when: ddns_auth_method == "userpass"
+
+- name: ddns - create ddns.conf file
+  blockinfile:
+    block: |
+      [config]
+      guess_external_ip = false
+      
+      [{{ddns_provider}}]
+      provider = {{ddns_provider}}
+      username = {{ddns_username}}
+      password = {{ddns_password}}
+    path: "{{var_ipfire}}/ddns/ddns.conf"
+    marker: "### {mark} FireMyPi Managed Block ###"
+    create: true
+    mode: '644'
+  when: ddns_auth_method == "userpass"
+
+- name: ddns - create config file
+  lineinfile:
+    line: "{{ddns_provider}},{{firemypi_fqdn}},,,,{{ddns_username}},{{ddns_password}},on"
+    path: "{{var_ipfire}}/ddns/config"
+    create: true
+    mode: '644'
+  when: ddns_auth_method == "userpass"
+
+...

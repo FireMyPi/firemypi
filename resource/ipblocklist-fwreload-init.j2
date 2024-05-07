@@ -1,0 +1,21 @@
+#!/bin/sh
+
+. /etc/sysconfig/rc
+. $rc_functions
+
+case "$1" in
+    start)
+	# only start the ipblocklist monitor if feature is enabled and 
+	# monitor hasn't run before	
+	if [[ "{{include_ipblocklist}}" == "True" && ! -f /var/ipfire/ipblocklist/ipblocklist-fwreload_ok ]]
+	then
+		boot_mesg "Starting ipblocklist monitor..."
+		loadproc -b /root/ipblocklist-fwreload
+	fi
+        ;;
+
+    *)
+        echo "Usage: $0 {start}"
+        exit 1
+        ;;
+esac

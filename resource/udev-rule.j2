@@ -1,0 +1,3 @@
+
+# Call a script that renames interfaces for Raspberry Pi
+ACTION=="add", SUBSYSTEM=="net", PROGRAM=="/lib/udev/network-hotplug-firemypi", RESULT=="?*", NAME="$result"

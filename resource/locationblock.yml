@@ -1,0 +1,75 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  locationblock.yml
+#
+
+#
+# Configure and turn on locationblock.
+#
+
+
+- name: Load locationblock variables
+  include_vars:
+    file: "{{builddir}}/config/locationblock.yml"
+
+- name: Create the locationblock directory
+  file:
+    path: "{{var_ipfire}}/firewall"
+    state: directory
+
+- name: Copy locationblock settings file
+  template:
+    src: "{{builddir}}/resource/locationblock.j2"
+    dest: "{{var_ipfire}}/firewall/locationblock"
+
+- name: Set locationblock mode block-all
+  replace:
+    path: "{{var_ipfire}}/firewall/locationblock"
+    regexp: "off"
+    replace: "on"
+  when: locationblock_mode == "block-all"
+
+- name: Set locationblock mode allow-all
+  replace:
+    path: "{{var_ipfire}}/firewall/locationblock"
+    regexp: "on"
+    replace: "off"
+  when: locationblock_mode == "allow-all"
+
+- name: For mode block-all, apply the locations to allow
+  lineinfile:
+    path: "{{var_ipfire}}/firewall/locationblock"
+    regexp: "^{{item.country}}"
+    line: "{{item.country}}=off"
+  loop: "{{locations}}"
+  when: locationblock_mode == "block-all"
+
+- name: For mode allow-all, apply the locations to block
+  lineinfile:
+    path: "{{var_ipfire}}/firewall/locationblock"
+    regexp: "^{{item.country}}"
+    line: "{{item.country}}=on"
+  loop: "{{locations}}"
+  when: locationblock_mode == "allow-all"
+
+- name: Turn on location block
+  lineinfile:
+    path: "{{var_ipfire}}/firewall/locationblock"
+    regexp: "^LOCATIONBLOCK_ENABLED"
+    line: LOCATIONBLOCK_ENABLED=on
+
+...

@@ -1,0 +1,116 @@
+#!/bin/bash
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi - Dynamic DNS Update
+#
+
+#
+# This script performs the dynamic dns update function if ddns_auth_method
+# is set to "keypair".
+#
+
+BASEDIR=/root/ddns
+PNAME=`basename $0`
+TMP=/tmp
+IPCACHE=$TMP/$PNAME.ip
+IPSCRIPT=$TMP/$PNAME.script
+LOG=$TMP/$PNAME.log
+
+#
+# The following variables are configured by FireMyPi
+#
+
+KEY="K{{domain}}.+157+{{ddns_keyid}}.key"
+PRIVATE="K{{domain}}.+157+{{ddns_keyid}}.private"
+IFACE=red0
+HOST="{{firemypi_hostname}}"
+HostFQDN="{{firemypi_fqdn}}"
+GatewayName="{{prefix}}{{node}}gate.{{domain}}"
+
+
+function get_redip()
+{
+        # Block to obtain external IP address on server
+        REDIP=`ip --brief address show dev $IFACE`
+        REDIP=`echo $REDIP | cut -d\  -f3 | cut -d/ -f1`
+        echo "IP = $REDIP" >> $LOG
+}
+
+function get_gw()
+{
+	GW=`route -n | grep "^0.0.0.0" | gawk '{print $2}'`
+	echo "GW = $GW" >> $LOG
+}
+
+# return 0 if all is well
+# return 1 if you need to update
+function check_if_need_update()
+{
+	if [[ -f $IPCACHE ]]
+	then
+		oldIP=$(cat $IPCACHE)
+		[[ $REDIP != $oldIP ]] && return 1
+		return 0
+	fi
+	return 1
+}
+
+function update()
+{
+	# create script header
+	cat > $IPSCRIPT <<HERE
+update delete $GatewayName
+update add $GatewayName 900 A $GW
+update delete $HostFQDN
+update add $HostFQDN 900 A $REDIP
+HERE
+
+        # add script trailer
+	cat >> $IPSCRIPT <<HERE
+send
+HERE
+
+	echo "nsupdate -k ${BASEDIR}/$PRIVATE $IPSCRIPT" >> $LOG
+	nsupdate -k ${BASEDIR}/$PRIVATE $IPSCRIPT
+	if (($? == 0))
+	then
+		echo $REDIP > $IPCACHE
+		echo "$PNAME: $HOST on $IFACE, your new IP address is $REDIP and your gateway is $GW" >> $LOG
+		logger "$PNAME: $HOST on $IFACE, your new IP address is $REDIP and your gateway is $GW"
+		return 0
+	else
+		echo "$PNAME: $HOST on $IFACE, failed to update $HostFQDN or $GatewayName" >> $LOG
+		logger "$PNAME: $HOST on $IFACE, failed to update $HostFQDN or $GatewayName"
+		# reset cache so update is forced on next run
+		rm -f $IPCACHE
+		return 1
+	fi
+}
+
+function main()
+{
+	echo `date` > $LOG
+	get_redip
+	get_gw
+	check_if_need_update
+        # if update succeeds, exit 1 to indicate something changed
+        [ $? -ne 0 ] && update && exit 1
+	echo "$HOST: No change for $IFACE, still using $REDIP on gateway $GW." >> $LOG
+
+exit 0
+}
+
+main $*

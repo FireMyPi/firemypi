@@ -1,0 +1,120 @@
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+# 
+# FireMyPi: 	FireMyPi common variables and functions.
+#
+
+
+PNAME=`basename $0`
+DNAME=`dirname $0`
+[ "${DNAME}" = "." ] && DNAME=`pwd`
+BLK='\033[1;30m'	# black text
+RED='\033[1;31m'	# red text
+GRN='\033[1;32m'	# green text
+YLW='\033[1;33m'	# yellow text
+BLU='\033[1;34m'	# blue text
+MAG='\033[1;35m'	# magenta text
+CYA='\033[1;36m'	# cyan text
+WHI='\033[1;37m'	# white text
+NC='\033[0m'		# no color
+USER=`whoami`
+DATE=`date +%Y%m%d`
+TIME=`date +%H%M`
+SYSTEMVARS="${DNAME}/config/system_vars.yml"
+CONFIG="${DNAME}/config"
+DEPLOY="${DNAME}/deploy"
+RESOURCE="${DNAME}/resource"
+SECRETS="${DNAME}/secrets"
+
+function header()
+{
+	echo -e "${RED}FireMyPi ${*}${NC}\n"
+}
+
+function check-license()
+{
+	if [ ! -e ${DNAME}/license.accepted ]
+	then
+	#	echo -e "\nCopyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.\n"
+	#	echo -e "FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-"
+	#	echo -e "NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)."
+	#	echo -e "\n${RED}License must be accepted to use FireMyPi.${NC}\n"
+	#	read -p "Press <Enter> to continue..."
+		${DNAME}/accept-license.sh
+		return $?
+	fi
+	return 0
+}
+
+function message()
+{
+        echo "${PNAME}: $*"
+}
+
+function abort()
+{
+        message "aborting -- $*"
+        exit 1
+}
+
+function ansible-check()
+{
+	type ansible-playbook > /dev/null 2>&1
+	return $?
+}
+
+function apache2-utils-check()
+{
+        type htpasswd > /dev/null 2>&1
+        return $?
+}
+
+function openssl-check()
+{
+	type openssl > /dev/null 2>&1
+	return $?
+}
+
+function pwgen-check()
+{
+	type pwgen > /dev/null 2>&1
+	return $?
+}
+
+function u-boot-tools-check()
+{
+	type mkimage > /dev/null 2>&1
+	return $?
+}
+
+function get-config()
+{
+	if [[ -e ${1} ]]
+	then
+		VAR=`grep "[[:space:]]${2}:" ${1} 2>/dev/null`
+		VAR=${VAR//[[:space:]]}
+		VAR=`echo $VAR | cut -d: -f2`
+		VAR=${VAR//\"}
+		echo "$VAR"
+	fi
+}
+
+function create-secretfile()
+{
+        # Create secret file and chmod to 600.
+        rm -rf ${1}
+        touch ${1}
+        chmod 600 ${1}
+}
+

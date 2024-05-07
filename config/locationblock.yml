@@ -1,0 +1,52 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# Set the locationblock mode and the countries for the firewall to 
+# block or allow here.
+#
+#   These are global settings for all nodes.
+#
+
+#
+# The locationblock_mode determines the default behavior of locationblock.
+# The idea behind this is that you typically want to block all locations
+# and only allow a select few or allow all locations and only block a select
+# few.
+#
+#     locationblock_mode: (allow-all | block-all)
+# 
+# If allow-all, all locations will be allowed except for the countries
+# specified in the locations list below.
+#
+# If block-all, all locations will be blocked except for the countries
+# specified in the locations list below.
+#
+
+#   locationblock_mode: "allow-all"
+    locationblock_mode: "block-all"
+
+# Locations listed here will be allowed if mode is block-all and blocked
+# if mode is allow-all.
+
+    locations:
+
+    - country: "US"
+#    - country: "GB"
+#    - country: "FR"
+#    - country: "CN"
+#    - country: "RU"
+
+...

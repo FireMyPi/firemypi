@@ -1,0 +1,44 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# Configure the ipblocklist sources to include.  These settings will apply
+# to all nodes with include_ipblocklist enabled.
+#
+# Use quoted "on" and "off" for all values so that ansible doesn't
+# translate them to True and False.
+#
+ 
+    ipblocklist_enable: "on"
+    ipblocklist_logging: "on"
+
+    alienvault: "off"
+    blocklist_de: "on"
+    bogon: "off"
+    bogon_full: "on"
+    ciarmy: "on"
+    dshield: "on"
+    emerging_compromised: "off"
+    emerging_fwrule: "off"
+    feodo_aggressive: "off"
+    feodo_ip: "off"
+    feodo_recommended: "off"
+    shodan: "off"
+    spamhaus_drop: "on"
+    spamhaus_edrop: "off"
+    tor_all: "off"
+    tor_exit: "on"
+
+...

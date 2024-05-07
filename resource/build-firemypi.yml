@@ -1,0 +1,80 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  build-firemypi.yml
+#
+
+#
+# This is the main build playbook.  It sets environment variables and calls
+# other playbooks needed to complete the build.
+#
+
+
+- name: FireMyPi building IPFire configuration
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  user: ${username}
+
+  vars_files:
+    - "{{builddir}}/core-image-to-use.yml"
+    - "{{builddir}}/config/system_vars.yml"
+    - "{{builddir}}/config/{{prefix}}{{node}}_vars.yml"
+
+  vars:
+    nodedir: "{{builddir}}/deploy/{{prefix}}{{node}}"
+    targetdir: "{{nodedir}}/target"
+
+    var_ipfire: "{{targetdir}}/var/ipfire"
+
+    temp: "{{nodedir}}/temp"
+
+  tasks:
+
+    - import_tasks: build-set-vars.yml
+    - import_tasks: build-prep.yml
+    - import_tasks: build-info.yml
+    - import_tasks: main-settings.yml
+    - import_tasks: udev.yml
+    - import_tasks: ethernet.yml
+    - import_tasks: dhcp.yml
+      when: include_dhcp
+
+    - import_tasks: fwrules.yml
+      when: include_fwrules
+
+    - import_tasks: monitor-red0.yml
+      when: include_monitor_red0
+
+    - import_tasks: ddns.yml
+      when: include_ddns
+
+    - import_tasks: dnsaddservers.yml
+      when: include_dnsaddservers
+
+    - import_tasks: locationblock.yml
+      when: include_locationblock
+
+    - import_tasks: ipblocklist.yml
+      when: include_ipblocklist
+
+    - import_tasks: vpn.yml
+      when: include_vpn
+
+    - import_tasks: ovpn.yml
+      when: include_ovpn
+
+...

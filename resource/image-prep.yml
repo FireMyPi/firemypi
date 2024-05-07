@@ -1,0 +1,72 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  image-prep.yml
+#
+
+#
+# Copy the core image temp.  Create loop device and mount the core image
+# partitions so that they can be directly modified.
+#
+
+
+- name: Verify become root - this task will fail if become root fails
+  command: "whoami"
+  timeout: 3
+  become: true
+
+- name: Create temp
+  file:
+    path: "{{temp}}"
+    state: directory
+
+- name: Copy core image to temp
+  command: cp -f {{core_image}} {{temp_image}}
+
+- name: Create loop device
+  command: losetup --nooverlap -P -f --show {{temp_image}}
+  register: loop_device
+  become: true
+
+- name: Create mount point for p1
+  file:
+    path: "{{temp}}/p1"
+    state: directory
+
+- name: Mount p1
+  mount:
+    src: "{{loop_device.stdout}}p1"
+    path: "{{temp}}/p1"
+    fstype: auto
+    fstab: "{{temp}}/tempfstab"
+    state: mounted
+  become: true
+
+- name: Create mount point for p3
+  file:
+    path: "{{temp}}/p3"
+    state: directory
+
+- name: Mount p3
+  mount:
+    src: "{{loop_device.stdout}}p3"
+    path: "{{temp}}/p3"
+    fstype: auto
+    fstab: "{{temp}}/tempfstab"
+    state: mounted
+  become: true
+
+...

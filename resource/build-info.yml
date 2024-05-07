@@ -1,0 +1,50 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  build-info.yml
+#
+
+#
+# This playbook creates the firemypi-config.info file which contains the
+# parameters that were used for the build.
+#
+
+
+- name: Create some information about the build
+  copy:
+    content: |
+      Node {{node}} configured on {{date}} at {{time}} by {{user}}.
+
+    dest: "{{targetdir}}/firemypi-config.info"
+
+- name: Copy license acceptance
+  shell: "cat {{builddir}}/license.accepted >> {{targetdir}}/firemypi-config.info"
+
+- name: Copy system_vars.yml
+  shell: "cat {{builddir}}/config/system_vars.yml >> {{targetdir}}/firemypi-config.info"
+
+- name: Copy nodeN_vars.yml
+  shell: "cat {{builddir}}/config/{{prefix}}{{node}}_vars.yml >> {{targetdir}}/firemypi-config.info"
+
+- name: Copy locationblock.yml
+  shell: "cat {{builddir}}/config/locationblock.yml >> {{targetdir}}/firemypi-config.info"
+  when: include_locationblock
+
+- name: Copy ipblocklist.yml
+  shell: "cat {{builddir}}/config/ipblocklist.yml >> {{targetdir}}/firemypi-config.info"
+  when: include_ipblocklist
+
+...

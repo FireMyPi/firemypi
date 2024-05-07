@@ -1,0 +1,58 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  create-image.yml
+#
+
+#
+# This playbook sets environment variables and calls the playbooks needed
+# to create the bootable FireMyPi image.
+#
+
+
+- name: FireMyPi building IPFire image
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  user: ${username}
+
+  vars_files:
+    - "{{builddir}}/config/system_vars.yml"
+    - "{{builddir}}/config/{{prefix}}{{node}}_vars.yml"
+    - "{{builddir}}/core-image-to-use.yml"
+
+  vars:
+    nodedir: "{{builddir}}/deploy/{{prefix}}{{node}}"
+    targetdir: "{{nodedir}}/target"
+    temp: "{{nodedir}}/temp"
+    config_file: "{{archive}}"
+    image_file: "{{image}}"
+
+    temp_image: "{{temp}}/temp-core-image-{{prefix}}{{node}}-{{date}}.img"
+
+  tasks:
+
+    - import_tasks: build-set-vars.yml
+    - import_tasks: image-prep.yml
+    - import_tasks: image-p1.yml
+    - import_tasks: image-p3.yml
+      # Need a string comparison for include_portable because it is passed
+      # to ansible-playbook on the command line and is a string.
+    - import_tasks: image-portable.yml
+      when: include_portable == "true"
+    - import_tasks: image-finalize.yml
+
+...

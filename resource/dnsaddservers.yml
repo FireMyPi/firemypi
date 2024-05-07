@@ -1,0 +1,44 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  dnsaddservers.yml
+#
+
+#
+# This playbook adds additional DNS servers to the FireMyPi configuration.
+#
+
+
+- name: Get dns servers
+  include_vars:
+    file: "{{builddir}}/config/dnsservers.yml"
+
+- name: Create dns directory
+  file:
+    path: "{{var_ipfire}}/dns"
+    state: directory
+
+- name: Configure dns settings
+  template:
+    src: "{{builddir}}/resource/dnsaddservers-settings.j2"
+    dest: "{{var_ipfire}}/dns/settings"
+
+- name: Configure dns servers
+  template:
+    src: "{{builddir}}/resource/dnsaddservers-servers.j2"
+    dest: "{{var_ipfire}}/dns/servers"
+
+...

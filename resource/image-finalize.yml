@@ -1,0 +1,52 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  image-finalize.yml
+#
+
+#
+# This playbook cleans up the core image mounts and moves the FireMyPi
+# image file to the deploy directory.
+#
+
+- name: Sync filesystem
+  command: sync
+
+- name: Umount p1
+  mount:
+    path: "{{temp}}/p1"
+    state: unmounted
+  become: true
+
+- name: Umount p3
+  mount:
+    path: "{{temp}}/p3"
+    state: unmounted
+  become: true
+
+- name: Destroy loop device
+  command: losetup -d {{loop_device.stdout}}
+  become: true
+
+- name: Move updated image to deploy directory
+  command: mv -f {{temp_image}} {{image_file}}
+
+- name: Delete temp
+  file:
+    path: "{{temp}}"
+    state: absent
+
+...

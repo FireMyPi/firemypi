@@ -1,0 +1,64 @@
+code
+{ 
+	display: block;
+	white-space: pre;
+	background: #ccc;
+	color: #111;
+	font-weight: bold;
+	padding: 1em 1em 1em 1em;
+}
+
+h1	
+{
+	color: red;
+}
+
+
+/* Style page content */
+.body 
+{
+	margin-left: 20%; /* Same as the width of the sidebar below */
+	padding: 0px 10px;
+}
+
+.sidebar 
+{
+	width: 			20%; /* Set the width of the sidebar, match the margin above. */
+	min-width: 		200px;
+	height: 		100%; 
+	position: 		fixed; /* Fixed Sidebar (stay in place on scroll) */
+	z-index: 		1; /* Stay on top */
+	top: 			0; /* Stay at the top */
+	left: 			0;
+	background-color: 	#e7e8e1;
+	overflow-x: 		hidden; /* Disable horizontal scroll */
+	padding: 		20px 0px 20px 0px;
+}
+
+/* The navigation menu links */
+.sidebar a 
+{
+	padding: 3px 8px 3px 0px;
+	text-decoration: none;
+	font-size: 18px;
+	color: #1862c4;
+	display: block;
+}
+
+.sidebar ul 
+{
+	padding-left: 30px;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidebar a:hover 
+{
+	color: #006eff;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) 
+{
+	.sidebar {padding-top: 15px;}
+	.sidebar a {font-size: 18px;}
+}

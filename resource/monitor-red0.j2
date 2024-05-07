@@ -1,0 +1,73 @@
+#!/bin/bash
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:	monitor-red0.sh
+#
+
+#
+# Check status of the red0 interface and log the results.  Restart the red0
+# interface if down and 'monitor_red_restart: true'.
+#
+
+PNAME=`basename $0`
+LOG="/var/log/monitor-red0.log"
+
+COUNT=0
+UP=0
+DOWN=0
+DELAY={{monitor_red0_delay}}
+INTERVAL={{monitor_red0_interval}}
+RESTART={{monitor_red0_restart}}
+
+if [[ ${DELAY} -gt 0 ]]
+then
+	echo "${PNAME}: delaying ${DELAY} seconds before monitoring" >> ${LOG}
+	sleep ${DELAY}
+fi
+
+echo "${PNAME}: starting monitoring" >> ${LOG}
+echo "${PNAME}: DATE TIME COUNT UP DOWN" >> ${LOG}
+
+while :
+do
+	((COUNT+=1))
+	REDIP=`ip --brief address show dev red0`
+	REDIP=`echo ${REDIP} | cut -d\  -f3 | cut -d/ -f1`
+	DATE=`date +%Y%m%d`
+	TIME=`date +%H%M`
+	if [[ -z ${REDIP} ]]
+	then
+		((DOWN+=1))
+		echo "${PNAME}: ${DATE} ${TIME} ${COUNT} ${UP} ${DOWN} - red0 is DOWN" >> ${LOG}
+		if [[ "${RESTART}" == "True" ]]
+		then
+			echo "$PNAME: ${DATE} ${TIME} ${COUNT} ${UP} ${DOWN} - restarting red0 interface" >> ${LOG}
+			logger  "$PNAME: restarting red0 interface"
+			/etc/rc.d/init.d/networking/red stop
+			sleep 1
+			/etc/rc.d/init.d/networking/red start
+			echo "$PNAME: ${DATE} ${TIME} ${COUNT} ${UP} ${DOWN} - red0 restarted" >> ${LOG}
+			logger  "$PNAME: red0 interface restarted"
+		else
+			echo "$PNAME: restart is ${RESTART}, set 'monitor_red0_restart:' to 'true' for automated restarts " >> ${LOG}
+		fi
+	else
+		((UP+=1))
+		echo "${PNAME}: ${DATE} ${TIME} ${COUNT} ${UP} ${DOWN} - red0 is UP" >> ${LOG}
+	fi
+	sleep ${INTERVAL}
+done
+exit 0

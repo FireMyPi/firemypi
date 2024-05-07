@@ -1,0 +1,165 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi global system settings for all firewalls.
+#
+
+#
+# When editing YAML files, maintain the structure of the file including
+# quoting, spacing and upper/lowercase.
+#
+
+    # This is the prefix that will be used for all firewalls that are built.
+    # The default is 'firemypi' which will build firewalls with hostnames
+    # 'firemypi1', 'firemypi2', 'firemypi3', etc.  You'll want to change
+    # this, if for no other reason than you don't want bad actors to know
+    # that you're running a FireMyPi/IPFire firewall.
+    #
+    #prefix: "larry"
+    #prefix: "curly"
+    #prefix: "moe"
+    prefix: "firemypi"
+
+    theme: "ipfire"
+    timezone: "US/Mountain"
+    language: "en"
+    keymap: "/lib/kbd/keymaps/i386/qwerty/us.map.gz"
+
+    # The public domain name for the firewall.  This is typically a domain
+    # name that you own or the domain name given to you by the dynamic DNS
+    # service provider that you use.  
+    # The FQDN of the firewall is built as {prefix}{node}.{domain}.
+    # If you do not have a public domain, use 'localdomain'.
+    #domain: "mydomain.com"
+    domain: "localdomain"
+
+    # These are the default host numbers of the IP address for green0.
+    # They may be overridden in the individual nodeN_vars.yml file(s).
+    #
+    # green_host is the host number for the ipfire firewall when --prod
+    # is specified for the build.
+    green_host: 254
+    # green_testhost is the host number of the ipfire firewall when --test
+    # is specified for the build.
+    green_testhost: 245
+    # green_dnsserver is the dns server used for dhcp clients.  Normally
+    # this is the same as green_host, but some nodes may use a separate 
+    # internal dns server.
+    green_dnsserver: 254
+
+      
+    # 
+    # These are the basic FireMyPi features to include in all builds.
+    # They can be turned off here, but it is not recommended.
+    #
+
+    # Turn on file system journaling for the micro sd card.
+    enable_journaling: true
+    # Do not run the IPFire setup program.
+    disable_setup: true
+    # Start ssh but listen only on green0.
+    include_ssh: true
+    # Limit Web GUI to listen only on green0.
+    include_httpd: true
+    # Configure and start DHCP server.
+    include_dhcp: true
+    dhcp_range_start: 100
+    dhcp_range_end: 199
+
+
+    # 
+    # These are optional FireMyPi features to include in all builds.
+    #
+
+    # Send system information to ipfire.
+    # We encourage you to turn this on so that IPFire developers have
+    # information about all the Raspberry Pi firewalls out there.  No 
+    # personal information is sent by fireinfo.
+    #include_fireinfo: true
+    include_fireinfo: false
+    
+    # Include firewall rules that have previously been downloaded from
+    # an active IPFire firewall in the build.  Use 'get-fwrules.sh' to
+    # download rules from an active IPFire firewall.
+    include_fwrules: false
+
+    # Monitor the status of the red0 interface and write results to
+    # '/var/log/monitor-red0.log'.
+    # The monitor delay is the amount of time, in seconds, to wait before
+    # starting the monitor.  The default is to start monitoring immediately.
+    # The monitor interval is the amount of time, in seconds, between
+    # checks of the red0 interface.
+    # If 'monitor_red0_restart: true' then the red0 interface will be
+    # restarted if it is detected to be down.
+    include_monitor_red0: false
+    monitor_red0_delay: 0
+    monitor_red0_interval: 60
+    monitor_red0_restart: false
+
+    # If you have a public domain name enable dynamic DNS here.
+    # The ddns service provider, (token | username/password | keypair files)
+    # are configured in secrets/ddns.secret.yml.
+    #include_ddns: true
+    include_ddns: false
+    
+    # Set the ddns authentication mode.
+    #
+    # The ddns authentication method will depend on the dynamic DNS
+    # service provider.  Ipfire supports the token and username/password
+    # methods by default but we add the keypair method which implements
+    # a "nsupdate -k KEYFILE" command to perform the updates.
+    # Select only one of the authentication methods below.
+    #ddns_auth_method: "token"
+    #ddns_auth_method: "userpass"
+    #ddns_auth_method: "keypair"
+    ddns_auth_method: "none"
+
+    # If you need to include additional dns servers you can turn on
+    # include_dnsaddservers and specify the nameservers in
+    # config/dnsservers.yml.
+    #include_dnsaddservers: true
+    include_dnsaddservers: false
+
+    # If you include_dnsaddservers you may want or need to turn off your
+    # ISP nameservers.  The use_isp_nameservers variable allows you to do
+    # this for all nodes here and can be overridden in the individual
+    # nodeN_vars.yml file(s).
+    #use_isp_nameservers: "off"
+    use_isp_nameservers: "on"
+
+    # Turn on Location Block.  Configure in config/locationblock.yml.
+    #include_locationblock: true
+    include_locationblock: false
+
+    # Turn on IP Address Blocklists.  Configure in config/ipblocklists.yml.
+    #include_ipblocklist: true
+    include_ipblocklist: false
+
+    # Configure ipsec vpn tunnels between nodes.  Vpn configurations 
+    # will be built for nodes in config/active_vpn_nodes.yml.
+    # Use "mk-vpnpsksecret.sh" to create the vpn pre-shared key for all nodes.
+    #include_vpn: true
+    include_vpn: false
+
+    # Configure openvpn road warrior connection for remote administration.
+    # If include_ovpn is set to true, FireMyPi will configure a single
+    # road warrior connection named {{prefix}}{{node}}Admin that can be used
+    # to connect to the node from the internet.  Note that this only works
+    # if dynamic dns is used to make the firewall hostname public.
+    #include_ovpn: true
+    include_ovpn: false
+
+...

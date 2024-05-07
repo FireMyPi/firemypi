@@ -1,0 +1,115 @@
+#!/bin/bash
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi additions for udev.
+#
+# These additions assign green0 and red0 interfaces for Raspberry Pi.
+#
+
+# For Raspberry Pi, set interface names based on drivers for the onboard nic
+# and the ethernet dongle.  This makes sure that the onboard nic is green0
+# and that whatever dongle is attached or the wireless nic is red0.
+#
+# The nic assignments are written to the ipfire configuration so that they
+# persist across reboots.
+#
+
+
+LOG=/var/log/udev-network-hotplug-firemypi.log
+
+# Only run if FireMyPi.
+if [[ ! -f "/firemypi-config.info" ]]
+then
+	exit 1
+fi
+
+# Skip interfaces we're not interested in.
+case "${INTERFACE}" in
+	lo | tun* | ppp*)
+		exit 0
+		;;
+esac
+
+# Check if ethernet settings exist.
+if [[ ! -r "/var/ipfire/ethernet/settings" ]]
+then
+	exit 1
+fi
+
+echo "Processing network-hotplug-firemypi for INTERFACE=${INTERFACE}" >> ${LOG}
+
+ADDRESS="$(</sys/class/net/${INTERFACE}/address)"
+
+eval $(/usr/local/bin/readhash /var/ipfire/ethernet/settings)
+eval $(/usr/local/bin/readhash /sys/class/net/${INTERFACE}/device/uevent)
+
+case "${DRIVER}" in
+	lan78xx		|\
+	smsc95xx	|\
+	bcmgenet)
+		if [[ -z ${GREEN_DRIVER} ]]
+		then
+			echo "IPFire_green0_onboard - ${ADDRESS}" >> ${LOG}
+			echo "Updating settings:  GREEN_MACADDR=${ADDRESS}" >> ${LOG}
+			sed -i "s/GREEN_MACADDR.*/GREEN_MACADDR=${ADDRESS}/g" /var/ipfire/ethernet/settings
+			echo "Updating settings:  GREEN_DRIVER=${DRIVER}" >> ${LOG}
+			sed -i "s/GREEN_DRIVER.*/GREEN_DRIVER=${DRIVER}/g" /var/ipfire/ethernet/settings
+			sync
+			echo "green0"
+		else
+			echo "Interface ${INTERFACE} already assigned, ignoring" >> ${LOG}
+		fi
+		;;
+{% if wireless_red0 == true %}
+	brcmfmac)
+		if [[ -z ${RED_DRIVER} ]]
+		then
+			echo "IPFire_red0_wireless - ${ADDRESS}" >> ${LOG}
+			echo "Updating settings:  RED_MACADDR=${ADDRESS}" >> ${LOG}
+			sed -i "s/RED_MACADDR.*/RED_MACADDR=${ADDRESS}/g" /var/ipfire/ethernet/settings
+			echo "Updating settings:  RED_DRIVER=${DRIVER}" >> ${LOG}
+			sed -i "s/RED_DRIVER.*/RED_DRIVER=${DRIVER}/g" /var/ipfire/ethernet/settings
+			sync
+			echo "red0"
+		else
+			echo "Interface ${INTERFACE} already assigned, ignoring" >> ${LOG}
+		fi
+		;;
+{% else %}
+	pegasus		|\
+	r8152		|\
+	ax88179_178a	|\
+	asix)
+		if [[ -z ${RED_DRIVER} ]]
+		then
+			echo "IPFire_red0_dongle - ${ADDRESS}" >> ${LOG}
+			echo "Updating settings:  RED_MACADDR=${ADDRESS}" >> ${LOG}
+			sed -i "s/RED_MACADDR.*/RED_MACADDR=${ADDRESS}/g" /var/ipfire/ethernet/settings
+			echo "Updating settings:  RED_DRIVER=${DRIVER}" >> ${LOG}
+			sed -i "s/RED_DRIVER.*/RED_DRIVER=${DRIVER}/g" /var/ipfire/ethernet/settings
+			sync
+			echo "red0"
+		else
+			echo "Interface ${INTERFACE} already assigned, ignoring" >> ${LOG}
+		fi
+		;;
+{% endif %}
+	*)
+		echo "network-hotplug-rename: No match for network device driver '$DRIVER'" >> ${LOG}
+		logger "network-hotplug-rename: No match for network device driver '$DRIVER'" 
+		;;
+esac
+
+exit 0

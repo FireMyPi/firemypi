@@ -1,0 +1,103 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  vpn.yml
+#
+
+#
+# Create ipsec vpn configuration for node to node tunnels.
+#
+
+
+- name: Load active nodes
+  include_vars:
+    file: "{{builddir}}/config/active_vpn_nodes.yml"
+
+- name: Get vpn_psk
+  include_vars:
+    file: "{{builddir}}/secrets/vpnpsk-secret.yml"
+
+- name: Create the vpn directory
+  file:
+    path: "{{var_ipfire}}/vpn"
+    state: directory
+
+- name: Create VPN config file
+  lineinfile:
+    dest: "{{var_ipfire}}/vpn/config"
+    line: |
+          {{item.vpnnode}},on,{{prefix}}{{node}}{{prefix}}{{item.vpnnode}},,net,psk,{{vpn_psk}},,@{{prefix}}{{node}}.{{domain}},192.168.{{node}}.0/255.255.255.0,@{{prefix}}{{item.vpnnode}}.{{domain}},{{prefix}}{{item.vpnnode}}.{{domain}},192.168.{{item.vpnnode}}.0/255.255.255.0,off,,,off,3,1,aes256gcm128|aes256gcm96|aes256gcm64|aes256,sha2_512|sha2_256,curve25519|curve448|4096|3072|2048,aes256gcm128|aes256gcm96|aes256gcm64|aes256,sha2_512|sha2_256,curve25519|curve448|4096|3072,on,,,restart,on,ikev2,120,30,off,start,900,tunnel,,,1500
+    create: true
+  loop: "{{activevpnnodes}}"
+  when: item.vpnnode != {{node}}
+
+- name: Remove blank lines from config
+  lineinfile:
+    dest: "{{var_ipfire}}/vpn/config"
+    regexp: "^$"
+    state: absent
+
+- name: Create ipsec.conf file
+  template:
+    src: "{{builddir}}/resource/vpn-conf-header.j2"
+    dest: "{{var_ipfire}}/vpn/ipsec.conf"
+
+- name: Add VPN connections to ipsec.conf
+  blockinfile:
+    path: "{{var_ipfire}}/vpn/ipsec.conf"
+    marker: ""
+    block: |
+           conn {{prefix}}{{node}}{{prefix}}{{item.vpnnode}}
+                   left=%defaultroute
+                   leftsubnet=192.168.{{node}}.0/24
+                   leftfirewall=yes
+                   lefthostaccess=yes
+                   right={{prefix}}{{item.vpnnode}}.{{domain}}
+                   rightsubnet=192.168.{{item.vpnnode}}.0/24
+                   leftid="@{{prefix}}{{node}}.{{domain}}"
+                   rightid="@{{prefix}}{{item.vpnnode}}.{{domain}}"
+                   type=tunnel
+                   ike=aes256gcm128-sha2_512-curve25519,aes256gcm128-sha2_512-curve448,aes256gcm128-sha2_512-modp4096,aes256gcm128-sha2_512-modp3072,aes256gcm128-sha2_512-modp2048,aes256gcm128-sha2_256-curve25519,aes256gcm128-sha2_256-curve448,aes256gcm128-sha2_256-modp4096,aes256gcm128-sha2_256-modp3072,aes256gcm128-sha2_256-modp2048,aes256gcm96-sha2_512-curve25519,aes256gcm96-sha2_512-curve448,aes256gcm96-sha2_512-modp4096,aes256gcm96-sha2_512-modp3072,aes256gcm96-sha2_512-modp2048,aes256gcm96-sha2_256-curve25519,aes256gcm96-sha2_256-curve448,aes256gcm96-sha2_256-modp4096,aes256gcm96-sha2_256-modp3072,aes256gcm96-sha2_256-modp2048,aes256gcm64-sha2_512-curve25519,aes256gcm64-sha2_512-curve448,aes256gcm64-sha2_512-modp4096,aes256gcm64-sha2_512-modp3072,aes256gcm64-sha2_512-modp2048,aes256gcm64-sha2_256-curve25519,aes256gcm64-sha2_256-curve448,aes256gcm64-sha2_256-modp4096,aes256gcm64-sha2_256-modp3072,aes256gcm64-sha2_256-modp2048,aes256-sha2_512-curve25519,aes256-sha2_512-curve448,aes256-sha2_512-modp4096,aes256-sha2_512-modp3072,aes256-sha2_512-modp2048,aes256-sha2_256-curve25519,aes256-sha2_256-curve448,aes256-sha2_256-modp4096,aes256-sha2_256-modp3072,aes256-sha2_256-modp2048!
+                   esp=aes256gcm128-curve25519,aes256gcm128-curve448,aes256gcm128-modp4096,aes256gcm128-modp3072,aes256gcm96-curve25519,aes256gcm96-curve448,aes256gcm96-modp4096,aes256gcm96-modp3072,aes256gcm64-curve25519,aes256gcm64-curve448,aes256gcm64-modp4096,aes256gcm64-modp3072,aes256-sha2_512-curve25519,aes256-sha2_512-curve448,aes256-sha2_512-modp4096,aes256-sha2_512-modp3072,aes256-sha2_256-curve25519,aes256-sha2_256-curve448,aes256-sha2_256-modp4096,aes256-sha2_256-modp3072!
+                   keyexchange=ikev2
+                   ikelifetime=3h
+                   keylife=1h
+                   dpdaction=restart
+                   dpddelay=30
+                   dpdtimeout=120
+                   authby=secret
+                   auto=start
+                   fragmentation=yes
+    create: true
+  loop: "{{activevpnnodes}}"
+  when: item.vpnnode != {{node}}
+
+- name: Create ipsec.secrets file
+  lineinfile:
+    dest: "{{var_ipfire}}/vpn/ipsec.secrets"
+    line: |
+      @{{prefix}}{{node}}.{{domain}} @{{prefix}}{{item.vpnnode}}.{{domain}} : PSK '{{vpn_psk}}'
+    create: true
+  loop: "{{activevpnnodes}}"
+  when: item.vpnnode != {{node}}
+
+- name: Turn on ipsec
+  copy:
+    content: |
+      ENABLED=on
+    dest: "{{var_ipfire}}/vpn/settings"
+
+...

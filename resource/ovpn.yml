@@ -1,0 +1,109 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  ovpn.yml
+#
+
+#
+# Configure OpenVPN for road warrior admin access.
+#
+
+
+- name: Load openvpn variables
+  include_vars:
+    file: "{{builddir}}/config/openvpn.yml"
+
+- name: Check if ovpn secrets exist
+  stat:
+    path: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}"
+  register: ovpnexists
+
+- name: Create ovpn secrets
+  import_tasks: ovpn-mkconfig.yml
+  when: ovpnexists.stat.exists == false
+
+- name: Create ovpn directory structure
+  file:
+    dest: "{{var_ipfire}}/ovpn"
+    state: directory
+    mode: '700'
+
+- name: Create openssl directory
+  file:
+    dest: "{{var_ipfire}}/ovpn/openssl"
+    state: directory
+
+- name: Create ovpn/ca directory
+  file:
+    dest: "{{var_ipfire}}/ovpn/ca"
+    state: directory
+
+- name: Create ovpn/certs directory
+  file:
+    dest: "{{var_ipfire}}/ovpn/certs"
+    state: directory
+
+- name: Create ovpn/crls directory
+  file:
+    dest: "{{var_ipfire}}/ovpn/crls"
+    state: directory
+
+- name: Create ovpn settings file
+  template:
+    src: "{{builddir}}/resource/ovpn-settings.j2"
+    dest: "{{var_ipfire}}/ovpn/settings"
+    mode: '644'
+
+- name: Create ovpn server.conf file
+  template:
+    src: "{{builddir}}/resource/ovpn-server-conf.j2"
+    dest: "{{var_ipfire}}/ovpn/server.conf"
+    mode: '644'
+
+- name: Create ovpn.cnf file
+  template:
+    src: "{{builddir}}/resource/ovpn-ovpncnf.j2"
+    dest: "{{var_ipfire}}/ovpn/openssl/ovpn.cnf"
+    mode: '644'
+
+- name: Create ovpnconfig file
+  lineinfile:
+    create: true
+    path: "{{var_ipfire}}/ovpn/ovpnconfig"
+    line: "{{item.index}},{{item.offon}},{{item.name}},{{item.name}},host,cert,,,,,,,,,,,,,,,,,,,,,Configured by FireMyPi,,,,,,,dynamic,,,,,,,,,,HOTP/T30/6"
+    mode: '644'
+  loop: "{{ovpn_roadwarrior}}"
+  when: ovpn_roadwarrior_enabled
+
+- name: Install CA certificates
+  copy:
+    src: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/ca"
+    dest: "{{var_ipfire}}/ovpn"
+    mode: preserve
+
+- name: Install host certificates
+  copy:
+    src: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs"
+    dest: "{{var_ipfire}}/ovpn"
+    mode: preserve
+
+- name: Install certificate revocation list
+  copy:
+    src: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/crls/cacrl.pem"
+    dest: "{{var_ipfire}}/ovpn/crls/cacrl.pem"
+    mode: preserve
+
+...
