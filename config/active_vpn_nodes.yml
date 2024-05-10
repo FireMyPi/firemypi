@@ -16,6 +16,9 @@
 #
 # List the vpn nodes to configure and activate.
 #
+# The nodes that you activate here should all have 'include_vpn:'
+# set to 'true' when they are built.
+#
 
     activevpnnodes:
 

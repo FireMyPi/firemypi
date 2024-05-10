@@ -90,9 +90,9 @@ TESTPROD=`ls ${PORTABLE} | cut -d- -f5`
 
 DATE=`ls ${PORTABLE} | cut -d- -f6 | cut -d. -f1`
 
-COREIMAGE=`ls ipfire-*-core${CORENUM}-aarch64.img.xz 2>/dev/null`
+COREIMAGEZ=`ls ipfire-*-core${CORENUM}-aarch64.img.xz 2>/dev/null`
 
-if [[ -z ${COREIMAGE} ]]
+if [[ -z ${COREIMAGEZ} ]]
 then
 	echo "No matching image for core number ${CORENUM} found in current directory."
 	echo "This script must be run in a directory that has both a"
@@ -101,11 +101,11 @@ then
 	echo "Aborting."
 	exit 1
 else
-	echo "Found matching core image file:  ${COREIMAGE}"
+	echo "Found matching core image file:  ${COREIMAGEZ}"
 fi
 
 echo "Extracting core image..."
-unxz -kf ${COREIMAGE}
+unxz -kf ${COREIMAGEZ}
 
 COREIMAGE=`ls ipfire-*-core${CORENUM}-aarch64.img 2>/dev/null`
 

@@ -177,8 +177,8 @@ case "${AUTH}" in
 		PW1="None"
 		while [[ "${PW}" != "${PW1}" ]]
 		do
-			read -p "Enter Dynamic DNS password:   " PW
-			read -p "Verify password:              " PW1
+			read -ps "Enter Dynamic DNS password:   " PW
+			read -ps "Verify password:              " PW1
 			if [[ "${PW}" != "${PW1}" ]]
 			then
 				echo -e "Verification failed."

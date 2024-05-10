@@ -78,6 +78,7 @@
     dest: "{{temp}}/p3/etc/rc.d/init.d/monitor-red0"
     mode: '744'
   become: true
+  when: include_monitor_red0
 
 - name: Link K42monitor-red0 in rc0.d
   file:
@@ -85,6 +86,7 @@
     dest: "{{temp}}/p3/etc/rc.d/rc0.d/K42monitor-red0"
     state: link
   become: true
+  when: include_monitor_red0
 
 - name: Link S42monitor-red0 in rc3.d
   file:
@@ -92,6 +94,7 @@
     dest: "{{temp}}/p3/etc/rc.d/rc3.d/S42monitor-red0"
     state: link
   become: true
+  when: include_monitor_red0
 
 - name: Link K42monitor-red0 in rc6.d
   file:
@@ -99,6 +102,7 @@
     dest: "{{temp}}/p3/etc/rc.d/rc6.d/K42monitor-red0"
     state: link
   become: true
+  when: include_monitor_red0
 
 - name: Install the ipblocklist-fwreload script in init.d
   template:
@@ -106,6 +110,7 @@
     dest: "{{temp}}/p3/etc/rc.d/init.d/ipblocklist-fwreload"
     mode: '744'
   become: true
+  when: include_ipblocklist
 
 - name: Link S43ipblocklist-fwreload in rc3.d
   file:
@@ -113,6 +118,7 @@
     dest: "{{temp}}/p3/etc/rc.d/rc3.d/S43ipblocklist-fwreload"
     state: link
   become: true
+  when: include_ipblocklist
 
 - name: Sync filesystem
   command: sync

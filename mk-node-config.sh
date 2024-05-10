@@ -18,7 +18,7 @@
 #
 
 #
-# Create a node configuration file from the 'config/nodeN_vars.yml.template.'
+# Create a node configuration file.
 #
 # The script takes a node number as an argument and will prompt for a timezone.
 #

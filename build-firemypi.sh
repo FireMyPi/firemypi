@@ -38,7 +38,7 @@ CREATE_IMAGE=no
 FORCE_BUILD=no
 HAVEARGS=no
 SHOW=no
-PORTABLE=false
+BUILD_PORTABLE=false
 
 function usage()
 {
@@ -109,7 +109,7 @@ do
 			;;
 
 		--portable)
-			PORTABLE=true
+			BUILD_PORTABLE=true
 			;;
 
 		--debug)
@@ -163,7 +163,7 @@ fi
 
 [[ ${TEST_PROD} == none ]] && abort "must set --test or --prod"
 
-if [[ ${PORTABLE} == true ]] && [[ ${CREATE_IMAGE} == no ]]
+if [[ ${BUILD_PORTABLE} == true ]] && [[ ${CREATE_IMAGE} == no ]]
 	then
 		abort "must build image if --portable selected"
 fi
@@ -194,7 +194,7 @@ ARCHIVE="${DEPLOY}/${PREFIX}${NODE}/firemypi-core${CORENUMBER}-${PREFIX}${NODE}-
 ARCHIVEBASE=`basename ${ARCHIVE}`
 IMAGE="${DEPLOY}/${PREFIX}${NODE}/firemypi-core${CORENUMBER}-${PREFIX}${NODE}-image-${TEST_PROD}-${DATE}.img"
 IMAGEBASE=`basename ${IMAGE}`
-PORTBUILD="${DNAME}/portable/${PREFIX}${NODE}/firemypi-core${CORENUMBER}-${PREFIX}${NODE}-portable-${TEST_PROD}-${DATE}.img"
+PORTBUILD="${PORTABLE}/${PREFIX}${NODE}/firemypi-core${CORENUMBER}-${PREFIX}${NODE}-portable-${TEST_PROD}-${DATE}.img"
 PORTBASE=`basename ${PORTBUILD}`
 PARAMS=${DEPLOY}/${PREFIX}${NODE}/build-parameters-${TEST_PROD}
 
@@ -233,7 +233,7 @@ add-var "builddir" "${DNAME}"
 add-var "date" "${DATE}"
 add-var "time" "${TIME}"
 add-var "test_prod" "${TEST_PROD}"
-add-var "include_portable" "${PORTABLE}"
+add-var "include_portable" "${BUILD_PORTABLE}"
 
 if [[ ${BUILD_IPFIRE} == yes ]]
 then
@@ -305,7 +305,7 @@ then
 	else
 		message "Image created."
 		echo ""
-		if [[ ${PORTABLE} == true ]]
+		if [[ ${BUILD_PORTABLE} == true ]]
 		then
 			message "Portable build created."
 			echo ""
@@ -321,7 +321,7 @@ then
 	fi	
 	echo -e "Use rpi-imager to write image from deploy/${PREFIX}${NODE} to a micro sd card.\n"
 	echo -e "Image file:  ${GRN}${IMAGEBASE}${NC}\n"
-	if [[ ${PORTABLE} == true ]]
+	if [[ ${BUILD_PORTABLE} == true ]]
 	then
 		echo -e "Use 'portable-util.sh' to apply the portable build to an IPFire core image.\n"
 		echo -e "Portable build:  ${GRN}${PORTBASE}${NC}\n"

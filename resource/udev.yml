@@ -18,12 +18,11 @@
 #
 
 #
-# Add code to udev network-hotplug-rename to assign green0 and red0
-# interfaces for Raspberry Pi.
+# Add script to udev to assign green0 and red0 interfaces for Raspberry Pi.
 #
 
 
-- name: Copy additions to root directory
+- name: Copy udev script to root directory
   template:
     src: "{{builddir}}/resource/udev-firemypi.j2"
     dest: "{{targetdir}}/root/udev-firemypi"

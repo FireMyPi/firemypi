@@ -109,7 +109,7 @@ case $1 in
 		;;
 	--ALL)
 		echo -e "\n${RED}Are you sure that you want to delete ALL?${NC}\n"
-		read -p "Type 'yes' to delete all nodes, images and secrets: " YES
+		read -p "Type 'yes' to delete all nodes, secrets and the core image: " YES
 		if [[ ${YES} != "yes" ]]
 		then
 			echo -e "\nCancelled.\n"

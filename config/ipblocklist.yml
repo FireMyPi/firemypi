@@ -24,6 +24,8 @@
     ipblocklist_enable: "on"
     ipblocklist_logging: "on"
 
+    # See the Web GUI for more information on the blocklists
+    # shown here.
     alienvault: "off"
     blocklist_de: "on"
     bogon: "off"

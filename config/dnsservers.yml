@@ -16,16 +16,15 @@
 #
 # List the dns servers to use if include_dnsaddservers is on.
 #
-#   These are global settings for all nodes.
+# These are global settings for all nodes.
 #
-
-    # This example sets the node to use the public 84 and 88 dns servers.
+    # This example adds the public 84 and 88 dns servers to all nodes.
     dnsserver1: "8.8.4.4"
     dnsserver2: "8.8.8.8"
 
-    # This example sets the node to use the same internal dns server
-    # as is used by the dns clients.  The second dns server in this 
-    # example is set all zeros as in non-existing.
+    # This example adds the same internal dns server as is used by the
+    # dns clients for the firewall to use.  The second dns server in this
+    # example is set to all zeros as in non-existing.
     #dnsserver1: "192.168.{{node}}.{{green_dnsserver}}"
     #dnsserver2: "0.0.0.0"
 

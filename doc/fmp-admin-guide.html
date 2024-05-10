@@ -423,7 +423,7 @@
   </blockquote>
   <p><em>dhcp_static_enabled:</em></p>
   <blockquote>
-  <p>Turns on static (fixed) leases for the node that will be read from the node configuration file. You can <em>get-fixleases.sh</em> to copy DHCP fixed leases from a running IPFire firewall. If static leases are specified in both a <em>nodeN_vars.yml</em> file and a <em>nodeN.fixleases</em> file the leases from both files will be combined to produce the DHCP server configuration.</p>
+  <p>Turns on static (fixed) leases for the node that will be read from the node configuration file. You can use <em>get-fixleases.sh</em> to copy DHCP fixed leases from a running IPFire firewall. If static leases are specified in both a <em>nodeN_vars.yml</em> file and a <em>nodeN.fixleases</em> file the leases from both files will be combined to produce the DHCP server configuration.</p>
   </blockquote>
   <p><em>dhcp_static:</em></p>
   <blockquote>
@@ -544,7 +544,7 @@
   </blockquote>
   <p><strong>secrets/ovpn directory</strong></p>
   <blockquote>
-  <p>Contains the per node OpenVPN certificates and configuration information created by FireMyPi when run with <em>include_ovpn: true</em> the first time for a node. If you delete any of the node subdirectories in <em>secrets/ovpn</em> the certificates and configuration information will be recreated the next time you build the node with <em>include_ovpn: true</em>. However, you will need to reload the new road warrior certificate on your mobile device(s).</p>
+  <p>Contains the per node OpenVPN certificates and configuration information created by FireMyPi when run with <em>include_ovpn: true</em> the first time for a node. If you delete any of the node subdirectories in <em>secrets/ovpn</em> the certificates and configuration information will be recreated the next time you build the node with <em>include_ovpn: true</em>. In this case, you will need to load the new road warrior certificate onto your mobile device(s).</p>
   </blockquote>
   <hr />
   <h1 id="migrating-from-ipfire-to-firemypi">Migrating from IPFire to FireMyPi</h1>

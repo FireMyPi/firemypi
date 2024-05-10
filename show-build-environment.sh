@@ -104,7 +104,7 @@ secrets/root-secret.yml
 secrets/webadmin-secret.yml
 secrets/ddns-secret.yml		include_ddns
 secrets/ovpn-p12-secret.yml	include_ovpn
-secrets/psk-secret.yml		include_vpn
+secrets/vpnpsk-secret.yml	include_vpn
 HERE
 	echo ""
 }

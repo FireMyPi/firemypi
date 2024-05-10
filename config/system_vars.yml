@@ -39,7 +39,7 @@
     keymap: "/lib/kbd/keymaps/i386/qwerty/us.map.gz"
 
     # The public domain name for the firewall.  This is typically a domain
-    # name that you own or the domain name given to you by the dynamic DNS
+    # name that you own or the domain name given to you by the Dynamic DNS
     # service provider that you use.  
     # The FQDN of the firewall is built as {prefix}{node}.{domain}.
     # If you do not have a public domain, use 'localdomain'.
@@ -93,7 +93,9 @@
     
     # Include firewall rules that have previously been downloaded from
     # an active IPFire firewall in the build.  Use 'get-fwrules.sh' to
-    # download rules from an active IPFire firewall.
+    # download rules from an active IPFire firewall.  Depending on
+    # your situation, this feature may be better enabled on a node by
+    # node basis.
     include_fwrules: false
 
     # Monitor the status of the red0 interface and write results to
@@ -102,25 +104,27 @@
     # starting the monitor.  The default is to start monitoring immediately.
     # The monitor interval is the amount of time, in seconds, between
     # checks of the red0 interface.
-    # If 'monitor_red0_restart: true' then the red0 interface will be
-    # restarted if it is detected to be down.
+    # If 'monitor_red0_restart: true' then the monitor will attempt to
+    # restart the red0 interface if it is detected to be down.
     include_monitor_red0: false
     monitor_red0_delay: 0
     monitor_red0_interval: 60
     monitor_red0_restart: false
 
-    # If you have a public domain name enable dynamic DNS here.
-    # The ddns service provider, (token | username/password | keypair files)
-    # are configured in secrets/ddns.secret.yml.
+    # If you have a public domain name enable Dynamic DNS here.
+    # The Dynamic DNS service provider and authentication credentials,
+    # (token | username/password | keypair files), are configured in
+    # 'secrets/ddns.secret.yml'.  You can use the 'mk-ddns-secret.sh'
+    # script to create 'secrets/ddns-secret.yml'
     #include_ddns: true
     include_ddns: false
     
     # Set the ddns authentication mode.
     #
-    # The ddns authentication method will depend on the dynamic DNS
+    # The ddns authentication method will depend on the Dynamic DNS
     # service provider.  Ipfire supports the token and username/password
-    # methods by default but we add the keypair method which implements
-    # a "nsupdate -k KEYFILE" command to perform the updates.
+    # methods by default.  FireMyPi adds the keypair method which implements
+    # a 'nsupdate -k KEYFILE' command to perform the updates.
     # Select only one of the authentication methods below.
     #ddns_auth_method: "token"
     #ddns_auth_method: "userpass"
@@ -129,36 +133,37 @@
 
     # If you need to include additional dns servers you can turn on
     # include_dnsaddservers and specify the nameservers in
-    # config/dnsservers.yml.
+    # 'config/dnsservers.yml'.
     #include_dnsaddservers: true
     include_dnsaddservers: false
 
     # If you include_dnsaddservers you may want or need to turn off your
     # ISP nameservers.  The use_isp_nameservers variable allows you to do
     # this for all nodes here and can be overridden in the individual
-    # nodeN_vars.yml file(s).
+    # 'nodeN_vars.yml' file(s).
     #use_isp_nameservers: "off"
     use_isp_nameservers: "on"
 
-    # Turn on Location Block.  Configure in config/locationblock.yml.
+    # Turn on Location Block.  Configure in 'config/locationblock.yml'.
     #include_locationblock: true
     include_locationblock: false
 
-    # Turn on IP Address Blocklists.  Configure in config/ipblocklists.yml.
+    # Turn on IP Address Blocklists.  Configure in 'config/ipblocklists.yml'.
     #include_ipblocklist: true
     include_ipblocklist: false
 
     # Configure ipsec vpn tunnels between nodes.  Vpn configurations 
-    # will be built for nodes in config/active_vpn_nodes.yml.
-    # Use "mk-vpnpsksecret.sh" to create the vpn pre-shared key for all nodes.
+    # will be built for nodes in 'config/active_vpn_nodes.yml'.
+    # Use 'mk-vpnpsksecret.sh' to create the vpn pre-shared key for all nodes.
     #include_vpn: true
     include_vpn: false
 
-    # Configure openvpn road warrior connection for remote administration.
+    # Configure OpenVPN Road Warrior access to your firewall for remote
+    # administration.
     # If include_ovpn is set to true, FireMyPi will configure a single
     # road warrior connection named {{prefix}}{{node}}Admin that can be used
     # to connect to the node from the internet.  Note that this only works
-    # if dynamic dns is used to make the firewall hostname public.
+    # if Dynamic DNS is used to make the firewall hostname public.
     #include_ovpn: true
     include_ovpn: false
 

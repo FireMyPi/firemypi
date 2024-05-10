@@ -106,7 +106,7 @@ cd image
 unxz -kf "${IMAGE}"
 cd ..
 
-echo -e "Setting new image in core-image-to-use file...\n"
+echo -e "Creating core-image-to-use file...\n"
 COREIMAGE=`basename ${IMAGE} .xz`
 CORENUMBER=`echo ${IMAGE} | cut -d- -f3 | cut -de -f2`
 echo -e "---" > core-image-to-use.yml

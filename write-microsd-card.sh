@@ -43,4 +43,5 @@ echo -e "If you decide to use 'dd' be sure that you're writing to the correct"
 echo -e "device for the micro sd card and that the card has nothing mounted"
 echo -e "or in use.  After writing, eject the card before removing it.\n"
 
-
+echo -e "Done."
+exit 0
