@@ -14,18 +14,27 @@
 ##
 
 #
-# List the dns servers to use if include_dnsaddservers is on.
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
 #
-# These are global settings for all nodes.
-#
-    # This example adds the public 84 and 88 dns servers to all nodes.
-    dnsserver1: "8.8.4.4"
-    dnsserver2: "8.8.8.8"
 
-    # This example adds the same internal dns server as is used by the
-    # dns clients for the firewall to use.  The second dns server in this
-    # example is set to all zeros as in non-existing.
-    #dnsserver1: "192.168.{{node}}.{{green_dnsserver}}"
-    #dnsserver2: "0.0.0.0"
+#
+# FireMyPi:  dnssettings.yml
+#
+
+#
+# This playbook customizes the DNS settings.
+#
+
+
+- name: Create the dns directory
+  file:
+    dest: "{{var_ipfire}}/dns"
+    state: directory
+
+- name: Create the settings file
+  template:
+    src: "{{builddir}}/resource/dnssettings-settings.j2"
+    dest: "{{var_ipfire}}/dns/settings"
 
 ...

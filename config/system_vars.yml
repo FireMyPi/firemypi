@@ -14,6 +14,15 @@
 ##
 
 #
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  system_vars.yml
+#
+
+#
 # FireMyPi global system settings for all firewalls.
 #
 
@@ -40,7 +49,7 @@
 
     # The public domain name for the firewall.  This is typically a domain
     # name that you own or the domain name given to you by the Dynamic DNS
-    # service provider that you use.  
+    # service provider that you use.
     # The FQDN of the firewall is built as {prefix}{node}.{domain}.
     # If you do not have a public domain, use 'localdomain'.
     #domain: "mydomain.com"
@@ -60,8 +69,8 @@
     # internal dns server.
     green_dnsserver: 254
 
-      
-    # 
+
+    #
     # These are the basic FireMyPi features to include in all builds.
     # They can be turned off here, but it is not recommended.
     #
@@ -75,41 +84,14 @@
     # Limit Web GUI to listen only on green0.
     include_httpd: true
     # Configure and start DHCP server.
-    include_dhcp: true
+    include_dhcp_server: true
     dhcp_range_start: 100
     dhcp_range_end: 199
 
 
-    # 
+    #
     # These are optional FireMyPi features to include in all builds.
     #
-
-    # Send system information to ipfire.
-    # We encourage you to turn this on so that IPFire developers have
-    # information about all the Raspberry Pi firewalls out there.  No 
-    # personal information is sent by fireinfo.
-    #include_fireinfo: true
-    include_fireinfo: false
-    
-    # Include firewall rules that have previously been downloaded from
-    # an active IPFire firewall in the build.  Use 'get-fwrules.sh' to
-    # download rules from an active IPFire firewall.  Depending on
-    # your situation, this feature may be better enabled on a node by
-    # node basis.
-    include_fwrules: false
-
-    # Monitor the status of the red0 interface and write results to
-    # '/var/log/monitor-red0.log'.
-    # The monitor delay is the amount of time, in seconds, to wait before
-    # starting the monitor.  The default is to start monitoring immediately.
-    # The monitor interval is the amount of time, in seconds, between
-    # checks of the red0 interface.
-    # If 'monitor_red0_restart: true' then the monitor will attempt to
-    # restart the red0 interface if it is detected to be down.
-    include_monitor_red0: false
-    monitor_red0_delay: 0
-    monitor_red0_interval: 60
-    monitor_red0_restart: false
 
     # If you have a public domain name enable Dynamic DNS here.
     # The Dynamic DNS service provider and authentication credentials,
@@ -118,7 +100,7 @@
     # script to create 'secrets/ddns-secret.yml'
     #include_ddns: true
     include_ddns: false
-    
+
     # Set the ddns authentication mode.
     #
     # The ddns authentication method will depend on the Dynamic DNS
@@ -131,32 +113,84 @@
     #ddns_auth_method: "keypair"
     ddns_auth_method: "none"
 
+    # Turning on the include_dhcp_fixleases feature allows you to add
+    # DHCP fixed leases to the DHCP server as is done in 'Network/DHCP Server'
+    # in the Web GUI.  DHCP fixed leases can be specified either in the
+    # 'config/nodeN_vars.yml' file or in the 'config/nodeN.fixleases' file.
+    # The 'config/nodeN.fixleases' file can be downloaded from a running
+    # IPFire firewall with the 'get-fixleases.sh' script.  When
+    # 'include_dhcp_fixleases: true', set the source of the fixed leases
+    # with the 'fixleases_mode:' variable in the 'config/nodeN_vars.yml'
+    # file.
+    #include_dhcp_fixleases: true
+    include_dhcp_fixleases: false
+
     # If you need to include additional dns servers you can turn on
-    # include_dnsaddservers and specify the nameservers in
-    # 'config/dnsservers.yml'.
+    # include_dnsaddservers and specify the name servers in
+    # 'config/dnsaddservers.yml'.
     #include_dnsaddservers: true
     include_dnsaddservers: false
 
-    # If you include_dnsaddservers you may want or need to turn off your
-    # ISP nameservers.  The use_isp_nameservers variable allows you to do
-    # this for all nodes here and can be overridden in the individual
-    # 'nodeN_vars.yml' file(s).
-    #use_isp_nameservers: "off"
-    use_isp_nameservers: "on"
+    # If you need to customize the DNS server operation with any
+    # of the options found on the 'Network/Domain Name System' page,
+    # set 'include_dnssettings: true' and set the options here.
+    # The values of the 'dnssettings_*' variables below are the
+    # defaults as seen in the 'DNS Configuration' section on the
+    # 'Network/Domain Name System' page of the Web GUI.
+    #include_dnssettings: true
+    include_dnssettings: false
+    dnssettings_use_isp: "on"
+    dnssettings_proto: "UDP"
+    dnssettings_qname: "standard"
+    dnssettings_safe_search: "off"
+    dnssettings_safe_search_youtube: "on"
 
-    # Turn on Location Block.  Configure in 'config/locationblock.yml'.
-    #include_locationblock: true
-    include_locationblock: false
+    # Send system information to ipfire.
+    # We encourage you to turn this on so that IPFire developers have
+    # information about all the Raspberry Pi firewalls out there.  No
+    # personal information is sent by fireinfo.
+    #include_fireinfo: true
+    include_fireinfo: false
+
+    # Include firewall rules that have previously been downloaded from
+    # an active IPFire firewall in the build.  Use 'get-fwrules.sh' to
+    # download rules from an active IPFire firewall.  Depending on
+    # your situation, this feature may be better enabled on a node by
+    # node basis.
+    #include_fwrules: true
+    include_fwrules: false
+
+    # Turning on the include_hosts feature will allow you to add hosts to
+    # the local DNS server as is done in 'Network/Edit Hosts' in the Web GUI.
+    # Hosts can be specified either in the 'config/nodeN_vars.yml' file
+    # or in the 'config/nodeN.hosts' file.  The 'config/nodeN.hosts' file
+    # can be downloaded from a running IPFire firewall with the 'get-hosts.sh'
+    # script.  When 'include_hosts: true', set the source of the hostnames
+    # with the 'hosts_mode: variable in the 'config/nodeN_vars.yml' file.
+    #include_hosts: true
+    include_hosts: false
 
     # Turn on IP Address Blocklists.  Configure in 'config/ipblocklists.yml'.
     #include_ipblocklist: true
     include_ipblocklist: false
 
-    # Configure ipsec vpn tunnels between nodes.  Vpn configurations 
-    # will be built for nodes in 'config/active_vpn_nodes.yml'.
-    # Use 'mk-vpnpsksecret.sh' to create the vpn pre-shared key for all nodes.
-    #include_vpn: true
-    include_vpn: false
+    # Turn on Location Block.  Configure in 'config/locationblock.yml'.
+    #include_locationblock: true
+    include_locationblock: false
+
+    # Monitor the status of the red0 interface and write results to
+    # '/var/log/monitor-red0.log'.
+    # The monitor delay is the amount of time, in seconds, to wait before
+    # starting the monitor.  The default is to start monitoring immediately.
+    # The monitor interval is the amount of time, in seconds, between
+    # checks of the red0 interface.
+    # If 'monitor_red0_restart: true' then the monitor will attempt to
+    # restart the red0 interface if it is detected to be down.
+    #include_monitor_red0: true
+    include_monitor_red0: false
+    monitor_red0_delay: 0
+    monitor_red0_interval: 60
+    monitor_red0_restart: false
 
     # Configure OpenVPN Road Warrior access to your firewall for remote
     # administration.
@@ -166,5 +200,16 @@
     # if Dynamic DNS is used to make the firewall hostname public.
     #include_ovpn: true
     include_ovpn: false
+
+    # Install the add-on packages listed in 'config/pakfire.yml' when the
+    # firewall is first booted.
+    #include_pakfire: true
+    include_pakfire: false
+
+    # Configure Ipsec VPN tunnels between nodes.  VPN configurations
+    # will be built for nodes in 'config/active_vpn_nodes.yml'.
+    # Use 'mk-vpnpsksecret.sh' to create the VPN pre-shared key for all nodes.
+    #include_vpn: true
+    include_vpn: false
 
 ...

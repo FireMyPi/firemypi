@@ -14,7 +14,12 @@
 ##
 
 #
-# FireMyPi:	mk-vpnpsk-secret.sh
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  mk-vpnpsk-secret.sh
 #
 
 #
@@ -35,25 +40,6 @@ then
 fi
 
 source fmp-common
-
-function write-secretfile()
-{
-	# Write the secret file.
-	USER=`whoami`
-	DATE=`date`
-	echo -e "---" > ${1}
-	echo -e "" >> ${1}
-	echo -e "#" >> ${1}
-	echo -e "# FireMyPi Ipsec VPN pre-shared key file" >> ${1}
-	echo -e "# created with mk-vpnpsk-secret.sh by:" >> ${1}
-	echo -e "#" >> ${1}
-	echo -e "#   user: ${USER}" >> ${1}
-	echo -e "#   date: ${DATE}" >> ${1}
-	echo -e "#\n" >> ${1}
-	echo -e "    vpn_psk: \"${2}\"" >> ${1}
-	echo -e "" >> ${1}
-	echo -e "..." >> ${1}
-}
 
 SECRET="NONE"
 SECRETFILE="secrets/vpnpsk-secret.yml"
@@ -114,7 +100,46 @@ fi
 
 create-secretfile ${SECRETFILE}
 
-write-secretfile ${SECRETFILE} ${SECRET}
+# Write the secret file.
+USER=`whoami`
+DATE=`date`
+cat << HERE >> ${SECRETFILE}
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  vpnpsk-secret.yml
+#
+
+#
+# FireMyPi Ipsec VPN pre-shared key file
+# created with mk-vpnpsk-secret.sh by:
+#
+#   user: ${USER}
+#   date: ${DATE}
+#
+
+    vpn_psk: "${SECRET}"
+
+...
+HERE
 
 echo -e "\nIpsec VPN pre-shared key written to:\n"
 echo -e "${GRN}    ${SECRETFILE}${NC}\n"

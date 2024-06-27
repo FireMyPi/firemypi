@@ -14,24 +14,101 @@
 ##
 
 #
-# FireMyPi configuration playbook.
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
 #
 
-# Node:	1
+#
+# FireMyPi:  nodeN_vars.yml
+#
+
+#
+# FireMyPi Node Configuration
+#
+
+# Node: 0
 
     timezone: "US/Mountain"
 
     wireless_red0: false
 
-    dhcp_static_enabled: false
-    dhcp_static:
+    # DHCP Fixed Leases
+    #
+    # The 'fixleases_mode' tells FireMyPi where to get the information for
+    # DHCP fixed leases to write to the 'fixleases' file in the config.
+    #
+    # The options are:
+    #
+    #     off             - Turns off fixed leases for the node.  No
+    #                       'fixleases' file is created for the config.
+    #
+    #     fixleases_var   - Reads fixed leases from the 'fixleases'
+    #                       variable below to create the 'fixleases' file.
+    #
+    #     fixleases_file  - Reads fixed leases from the 'config/
+    #                       nodeN.fixleases' file for the node to create
+    #                       the 'fixleases' file.
+    #
+    #     combined        - Reads fixed leases from both the 'fixleases'
+    #                       variable and the 'config/nodeN.fixleases' file.
+    #                       The records are then combined and deduplicated
+    #                       to create the 'fixleases' file.
+    #
+    # Select one of the modes listed below:
+    fixleases_mode: "off"
+    #fixleases_mode: "fixleases_var"
+    #fixleases_mode: "fixleases_file"
+    #fixleases_mode: "combined"
 
-    - host: "Sample Host 1"
-      macid: "00:00:00:00:00:00"
-      ip: "192.168.1.0"
+    fixleases:
 
-    - host: "Sample Host 2"
-      macid: "00:00:00:00:00:00"
-      ip: "192.168.1.0"
+    - mac: "00:00:00:00:00:00"
+      ip: "192.168.0.0"
+      remark: "Sample Host 1"
+
+    - mac: "00:00:00:00:00:00"
+      ip: "192.168.0.0"
+      remark: "Sample Host 2"
+
+    # Local DNS Hostnames
+    #
+    # The 'hosts_mode' tells FireMyPi where to get the information for
+    # local DNS hostnames to write to the 'hosts' file in the config.
+    #
+    # The options are:
+    #
+    #     off             - Turns off hostnames for the node.  No 'hosts'
+    #                       file is created for the config.
+    #
+    #     hosts_var       - Reads hostnames from the 'hosts' variable
+    #                       below to create the 'hosts' file.
+    #
+    #     hosts_file      - Reads hostnames from the 'config/nodeN.hosts'
+    #                       file for the node to create the 'hosts' file.
+    #
+    #     combined        - Reads hostnames from both the 'hosts' variable
+    #                       and the 'config/nodeN.hosts' file. The records
+    #                       are then combined and deduplicated to create
+    #                       the 'hosts' file for the config.
+    #
+    # Select one of the modes listed below:
+    hosts_mode: "off"
+    #hosts_mode: "hosts_var"
+    #hosts_mode: "hosts_file"
+    #hosts_mode: "combined"
+
+    hosts:
+
+    - hostname: "Sample Host 1"
+      ip: "192.168.0.0"
+      domain: "localdomain"
+      generate_ptr: "on"
+      enabled: "on"
+
+    - hostname: "Sample Host 2"
+      ip: "192.168.0.0"
+      domain: "localdomain"
+      generate_ptr: "on"
+      enabled: "on"
 
 ...

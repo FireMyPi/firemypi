@@ -1,0 +1,85 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# FireMyPi:  pakfire.yml
+#
+
+#
+# This playbook creates the 'firemypi-pakfire.sh' script which
+# is added to 'rc.local' to install add-ons.
+#
+
+
+- name: Get list of pakfire add-ons
+  include_vars:
+    file: "{{builddir}}/config/pakfire.yml"
+
+- name: Create package install script
+  lineinfile:
+    create: true
+    path: "{{targetdir}}/root/firemypi-pakfire.sh"
+    line: |
+      #!/bin/sh
+      ##
+      ## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+      ##
+      ## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+      ## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+      ##
+      ## The full text of the license can be found in the included LICENSE file 
+      ## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+      ##
+      ## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+      ## be used by or for any business in any way.
+      ##
+
+      #
+      # FireMyPi - firemypi-pakfire.sh
+      #
+ 
+      #
+      # Install pakfire add-on packages on first boot.
+      #
+
+
+      if [ -e /var/ipfire/main/firemypi-pakfire-addons.installed ]
+      then
+        echo "FireMyPi - pakfire add-on packages already installed."
+        exit 0
+      else
+        echo "FireMyPi - installing pakfire add-on packages."
+
+        /opt/pakfire/pakfire update
+
+    mode: '744'
+
+- name: Create package install script
+  lineinfile:
+    path: "{{targetdir}}/root/firemypi-pakfire.sh"
+    line: "  /opt/pakfire/pakfire install {{item.package}} -y"
+  loop: "{{pakfire_addons}}"
+
+- name: Create package install script
+  lineinfile:
+    path: "{{targetdir}}/root/firemypi-pakfire.sh"
+    line: |
+
+      touch /var/ipfire/main/firemypi-pakfire-addons.installed
+
+      fi
+      # Done.
+
+...

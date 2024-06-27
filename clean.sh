@@ -14,7 +14,12 @@
 ##
 
 #
-# FireMyPi:	clean.sh
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  clean.sh
 #
 
 #

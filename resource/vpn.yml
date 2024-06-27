@@ -14,6 +14,11 @@
 ##
 
 #
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
 # FireMyPi:  vpn.yml
 #
 
@@ -24,7 +29,7 @@
 
 - name: Load active nodes
   include_vars:
-    file: "{{builddir}}/config/active_vpn_nodes.yml"
+    file: "{{builddir}}/config/vpnactivenodes.yml"
 
 - name: Get vpn_psk
   include_vars:
@@ -39,9 +44,9 @@
   lineinfile:
     dest: "{{var_ipfire}}/vpn/config"
     line: |
-          {{item.vpnnode}},on,{{prefix}}{{node}}{{prefix}}{{item.vpnnode}},,net,psk,{{vpn_psk}},,@{{prefix}}{{node}}.{{domain}},192.168.{{node}}.0/255.255.255.0,@{{prefix}}{{item.vpnnode}}.{{domain}},{{prefix}}{{item.vpnnode}}.{{domain}},192.168.{{item.vpnnode}}.0/255.255.255.0,off,,,off,3,1,aes256gcm128|aes256gcm96|aes256gcm64|aes256,sha2_512|sha2_256,curve25519|curve448|4096|3072|2048,aes256gcm128|aes256gcm96|aes256gcm64|aes256,sha2_512|sha2_256,curve25519|curve448|4096|3072,on,,,restart,on,ikev2,120,30,off,start,900,tunnel,,,1500
+          {{item.vpnnode}},on,{{prefix}}{{node}}{{prefix}}{{item.vpnnode}},,net,psk,{{vpn_psk}},,@{{prefix}}{{node}}.{{domain}},192.168.{{node}}.0/255.255.255.0,@{{prefix}}{{item.vpnnode}}.{{domain}},{{prefix}}{{item.vpnnode}}.{{domain}},192.168.{{item.vpnnode}}.0/255.255.255.0,off,,,off,3,1,chacha20poly1305|aes256gcm128|aes256gcm96|aes256gcm64|aes256|aes192gcm128|aes192gcm96|aes192gcm64|aes192|aes128gcm128|aes128gcm96|aes128gcm64|aes128,sha2_512|sha2_256,curve448|curve25519|e521|e384|4096|3072,chacha20poly1305|aes256gcm128|aes256gcm96|aes256gcm64|aes256|aes192gcm128|aes192gcm96|aes192gcm64|aes192|aes128gcm128|aes128gcm96|aes128gcm64|aes128,sha2_512|sha2_256,curve448|curve25519|e521|e384|4096|3072,on,,,restart,on,ikev2,120,30,off,start,900,tunnel,,,1500,
     create: true
-  loop: "{{activevpnnodes}}"
+  loop: "{{vpnactivenodes}}"
   when: item.vpnnode != {{node}}
 
 - name: Remove blank lines from config
@@ -70,8 +75,8 @@
                    leftid="@{{prefix}}{{node}}.{{domain}}"
                    rightid="@{{prefix}}{{item.vpnnode}}.{{domain}}"
                    type=tunnel
-                   ike=aes256gcm128-sha2_512-curve25519,aes256gcm128-sha2_512-curve448,aes256gcm128-sha2_512-modp4096,aes256gcm128-sha2_512-modp3072,aes256gcm128-sha2_512-modp2048,aes256gcm128-sha2_256-curve25519,aes256gcm128-sha2_256-curve448,aes256gcm128-sha2_256-modp4096,aes256gcm128-sha2_256-modp3072,aes256gcm128-sha2_256-modp2048,aes256gcm96-sha2_512-curve25519,aes256gcm96-sha2_512-curve448,aes256gcm96-sha2_512-modp4096,aes256gcm96-sha2_512-modp3072,aes256gcm96-sha2_512-modp2048,aes256gcm96-sha2_256-curve25519,aes256gcm96-sha2_256-curve448,aes256gcm96-sha2_256-modp4096,aes256gcm96-sha2_256-modp3072,aes256gcm96-sha2_256-modp2048,aes256gcm64-sha2_512-curve25519,aes256gcm64-sha2_512-curve448,aes256gcm64-sha2_512-modp4096,aes256gcm64-sha2_512-modp3072,aes256gcm64-sha2_512-modp2048,aes256gcm64-sha2_256-curve25519,aes256gcm64-sha2_256-curve448,aes256gcm64-sha2_256-modp4096,aes256gcm64-sha2_256-modp3072,aes256gcm64-sha2_256-modp2048,aes256-sha2_512-curve25519,aes256-sha2_512-curve448,aes256-sha2_512-modp4096,aes256-sha2_512-modp3072,aes256-sha2_512-modp2048,aes256-sha2_256-curve25519,aes256-sha2_256-curve448,aes256-sha2_256-modp4096,aes256-sha2_256-modp3072,aes256-sha2_256-modp2048!
-                   esp=aes256gcm128-curve25519,aes256gcm128-curve448,aes256gcm128-modp4096,aes256gcm128-modp3072,aes256gcm96-curve25519,aes256gcm96-curve448,aes256gcm96-modp4096,aes256gcm96-modp3072,aes256gcm64-curve25519,aes256gcm64-curve448,aes256gcm64-modp4096,aes256gcm64-modp3072,aes256-sha2_512-curve25519,aes256-sha2_512-curve448,aes256-sha2_512-modp4096,aes256-sha2_512-modp3072,aes256-sha2_256-curve25519,aes256-sha2_256-curve448,aes256-sha2_256-modp4096,aes256-sha2_256-modp3072!
+                   ike=chacha20poly1305-sha2_512-curve448,chacha20poly1305-sha2_512-curve25519,chacha20poly1305-sha2_512-ecp521,chacha20poly1305-sha2_512-ecp384,chacha20poly1305-sha2_512-modp4096,chacha20poly1305-sha2_512-modp3072,chacha20poly1305-sha2_256-curve448,chacha20poly1305-sha2_256-curve25519,chacha20poly1305-sha2_256-ecp521,chacha20poly1305-sha2_256-ecp384,chacha20poly1305-sha2_256-modp4096,chacha20poly1305-sha2_256-modp3072,aes256gcm128-sha2_512-curve448,aes256gcm128-sha2_512-curve25519,aes256gcm128-sha2_512-ecp521,aes256gcm128-sha2_512-ecp384,aes256gcm128-sha2_512-modp4096,aes256gcm128-sha2_512-modp3072,aes256gcm128-sha2_256-curve448,aes256gcm128-sha2_256-curve25519,aes256gcm128-sha2_256-ecp521,aes256gcm128-sha2_256-ecp384,aes256gcm128-sha2_256-modp4096,aes256gcm128-sha2_256-modp3072,aes256gcm96-sha2_512-curve448,aes256gcm96-sha2_512-curve25519,aes256gcm96-sha2_512-ecp521,aes256gcm96-sha2_512-ecp384,aes256gcm96-sha2_512-modp4096,aes256gcm96-sha2_512-modp3072,aes256gcm96-sha2_256-curve448,aes256gcm96-sha2_256-curve25519,aes256gcm96-sha2_256-ecp521,aes256gcm96-sha2_256-ecp384,aes256gcm96-sha2_256-modp4096,aes256gcm96-sha2_256-modp3072,aes256gcm64-sha2_512-curve448,aes256gcm64-sha2_512-curve25519,aes256gcm64-sha2_512-ecp521,aes256gcm64-sha2_512-ecp384,aes256gcm64-sha2_512-modp4096,aes256gcm64-sha2_512-modp3072,aes256gcm64-sha2_256-curve448,aes256gcm64-sha2_256-curve25519,aes256gcm64-sha2_256-ecp521,aes256gcm64-sha2_256-ecp384,aes256gcm64-sha2_256-modp4096,aes256gcm64-sha2_256-modp3072,aes256-sha2_512-curve448,aes256-sha2_512-curve25519,aes256-sha2_512-ecp521,aes256-sha2_512-ecp384,aes256-sha2_512-modp4096,aes256-sha2_512-modp3072,aes256-sha2_256-curve448,aes256-sha2_256-curve25519,aes256-sha2_256-ecp521,aes256-sha2_256-ecp384,aes256-sha2_256-modp4096,aes256-sha2_256-modp3072,aes192gcm128-sha2_512-curve448,aes192gcm128-sha2_512-curve25519,aes192gcm128-sha2_512-ecp521,aes192gcm128-sha2_512-ecp384,aes192gcm128-sha2_512-modp4096,aes192gcm128-sha2_512-modp3072,aes192gcm128-sha2_256-curve448,aes192gcm128-sha2_256-curve25519,aes192gcm128-sha2_256-ecp521,aes192gcm128-sha2_256-ecp384,aes192gcm128-sha2_256-modp4096,aes192gcm128-sha2_256-modp3072,aes192gcm96-sha2_512-curve448,aes192gcm96-sha2_512-curve25519,aes192gcm96-sha2_512-ecp521,aes192gcm96-sha2_512-ecp384,aes192gcm96-sha2_512-modp4096,aes192gcm96-sha2_512-modp3072,aes192gcm96-sha2_256-curve448,aes192gcm96-sha2_256-curve25519,aes192gcm96-sha2_256-ecp521,aes192gcm96-sha2_256-ecp384,aes192gcm96-sha2_256-modp4096,aes192gcm96-sha2_256-modp3072,aes192gcm64-sha2_512-curve448,aes192gcm64-sha2_512-curve25519,aes192gcm64-sha2_512-ecp521,aes192gcm64-sha2_512-ecp384,aes192gcm64-sha2_512-modp4096,aes192gcm64-sha2_512-modp3072,aes192gcm64-sha2_256-curve448,aes192gcm64-sha2_256-curve25519,aes192gcm64-sha2_256-ecp521,aes192gcm64-sha2_256-ecp384,aes192gcm64-sha2_256-modp4096,aes192gcm64-sha2_256-modp3072,aes192-sha2_512-curve448,aes192-sha2_512-curve25519,aes192-sha2_512-ecp521,aes192-sha2_512-ecp384,aes192-sha2_512-modp4096,aes192-sha2_512-modp3072,aes192-sha2_256-curve448,aes192-sha2_256-curve25519,aes192-sha2_256-ecp521,aes192-sha2_256-ecp384,aes192-sha2_256-modp4096,aes192-sha2_256-modp3072,aes128gcm128-sha2_512-curve448,aes128gcm128-sha2_512-curve25519,aes128gcm128-sha2_512-ecp521,aes128gcm128-sha2_512-ecp384,aes128gcm128-sha2_512-modp4096,aes128gcm128-sha2_512-modp3072,aes128gcm128-sha2_256-curve448,aes128gcm128-sha2_256-curve25519,aes128gcm128-sha2_256-ecp521,aes128gcm128-sha2_256-ecp384,aes128gcm128-sha2_256-modp4096,aes128gcm128-sha2_256-modp3072,aes128gcm96-sha2_512-curve448,aes128gcm96-sha2_512-curve25519,aes128gcm96-sha2_512-ecp521,aes128gcm96-sha2_512-ecp384,aes128gcm96-sha2_512-modp4096,aes128gcm96-sha2_512-modp3072,aes128gcm96-sha2_256-curve448,aes128gcm96-sha2_256-curve25519,aes128gcm96-sha2_256-ecp521,aes128gcm96-sha2_256-ecp384,aes128gcm96-sha2_256-modp4096,aes128gcm96-sha2_256-modp3072,aes128gcm64-sha2_512-curve448,aes128gcm64-sha2_512-curve25519,aes128gcm64-sha2_512-ecp521,aes128gcm64-sha2_512-ecp384,aes128gcm64-sha2_512-modp4096,aes128gcm64-sha2_512-modp3072,aes128gcm64-sha2_256-curve448,aes128gcm64-sha2_256-curve25519,aes128gcm64-sha2_256-ecp521,aes128gcm64-sha2_256-ecp384,aes128gcm64-sha2_256-modp4096,aes128gcm64-sha2_256-modp3072,aes128-sha2_512-curve448,aes128-sha2_512-curve25519,aes128-sha2_512-ecp521,aes128-sha2_512-ecp384,aes128-sha2_512-modp4096,aes128-sha2_512-modp3072,aes128-sha2_256-curve448,aes128-sha2_256-curve25519,aes128-sha2_256-ecp521,aes128-sha2_256-ecp384,aes128-sha2_256-modp4096,aes128-sha2_256-modp3072!
+                   esp=chacha20poly1305-sha2_512-curve448,chacha20poly1305-sha2_512-curve25519,chacha20poly1305-sha2_512-ecp521,chacha20poly1305-sha2_512-ecp384,chacha20poly1305-sha2_512-modp4096,chacha20poly1305-sha2_512-modp3072,chacha20poly1305-sha2_256-curve448,chacha20poly1305-sha2_256-curve25519,chacha20poly1305-sha2_256-ecp521,chacha20poly1305-sha2_256-ecp384,chacha20poly1305-sha2_256-modp4096,chacha20poly1305-sha2_256-modp3072,aes256gcm128-curve448,aes256gcm128-curve25519,aes256gcm128-ecp521,aes256gcm128-ecp384,aes256gcm128-modp4096,aes256gcm128-modp3072,aes256gcm96-curve448,aes256gcm96-curve25519,aes256gcm96-ecp521,aes256gcm96-ecp384,aes256gcm96-modp4096,aes256gcm96-modp3072,aes256gcm64-curve448,aes256gcm64-curve25519,aes256gcm64-ecp521,aes256gcm64-ecp384,aes256gcm64-modp4096,aes256gcm64-modp3072,aes256-sha2_512-curve448,aes256-sha2_512-curve25519,aes256-sha2_512-ecp521,aes256-sha2_512-ecp384,aes256-sha2_512-modp4096,aes256-sha2_512-modp3072,aes256-sha2_256-curve448,aes256-sha2_256-curve25519,aes256-sha2_256-ecp521,aes256-sha2_256-ecp384,aes256-sha2_256-modp4096,aes256-sha2_256-modp3072,aes192gcm128-curve448,aes192gcm128-curve25519,aes192gcm128-ecp521,aes192gcm128-ecp384,aes192gcm128-modp4096,aes192gcm128-modp3072,aes192gcm96-curve448,aes192gcm96-curve25519,aes192gcm96-ecp521,aes192gcm96-ecp384,aes192gcm96-modp4096,aes192gcm96-modp3072,aes192gcm64-curve448,aes192gcm64-curve25519,aes192gcm64-ecp521,aes192gcm64-ecp384,aes192gcm64-modp4096,aes192gcm64-modp3072,aes192-sha2_512-curve448,aes192-sha2_512-curve25519,aes192-sha2_512-ecp521,aes192-sha2_512-ecp384,aes192-sha2_512-modp4096,aes192-sha2_512-modp3072,aes192-sha2_256-curve448,aes192-sha2_256-curve25519,aes192-sha2_256-ecp521,aes192-sha2_256-ecp384,aes192-sha2_256-modp4096,aes192-sha2_256-modp3072,aes128gcm128-curve448,aes128gcm128-curve25519,aes128gcm128-ecp521,aes128gcm128-ecp384,aes128gcm128-modp4096,aes128gcm128-modp3072,aes128gcm96-curve448,aes128gcm96-curve25519,aes128gcm96-ecp521,aes128gcm96-ecp384,aes128gcm96-modp4096,aes128gcm96-modp3072,aes128gcm64-curve448,aes128gcm64-curve25519,aes128gcm64-ecp521,aes128gcm64-ecp384,aes128gcm64-modp4096,aes128gcm64-modp3072,aes128-sha2_512-curve448,aes128-sha2_512-curve25519,aes128-sha2_512-ecp521,aes128-sha2_512-ecp384,aes128-sha2_512-modp4096,aes128-sha2_512-modp3072,aes128-sha2_256-curve448,aes128-sha2_256-curve25519,aes128-sha2_256-ecp521,aes128-sha2_256-ecp384,aes128-sha2_256-modp4096,aes128-sha2_256-modp3072!
                    keyexchange=ikev2
                    ikelifetime=3h
                    keylife=1h
@@ -82,7 +87,7 @@
                    auto=start
                    fragmentation=yes
     create: true
-  loop: "{{activevpnnodes}}"
+  loop: "{{vpnactivenodes}}"
   when: item.vpnnode != {{node}}
 
 - name: Create ipsec.secrets file
@@ -91,7 +96,7 @@
     line: |
       @{{prefix}}{{node}}.{{domain}} @{{prefix}}{{item.vpnnode}}.{{domain}} : PSK '{{vpn_psk}}'
     create: true
-  loop: "{{activevpnnodes}}"
+  loop: "{{vpnactivenodes}}"
   when: item.vpnnode != {{node}}
 
 - name: Turn on ipsec

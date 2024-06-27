@@ -19,26 +19,25 @@
 #
 
 #
-# FireMyPi:  dnsaddservers.yml
+# FireMyPi:  pakfire.yml
 #
 
 #
-# This playbook adds additional DNS servers to the FireMyPi configuration.
+# List packages that you want pakfire to install on first boot.
+#
+# The package name is the "meta" name which does not include the version.
+#
+# For example, list "7zip" to install "7zip-17.05-10" that you see on
+# the *IPFire/Pakfire* screen.
+#
+# Some utility examples are listed below.  Refer to the *IPFire/Pakfire*
+# screen for the full list of available add-ons.
 #
 
+    pakfire_addons:
 
-- name: Get dns servers
-  include_vars:
-    file: "{{builddir}}/config/dnsaddservers.yml"
-
-- name: Create dns directory
-  file:
-    path: "{{var_ipfire}}/dns"
-    state: directory
-
-- name: Configure dns servers
-  template:
-    src: "{{builddir}}/resource/dnsaddservers-servers.j2"
-    dest: "{{var_ipfire}}/dns/servers"
+    - package: "7zip"
+    - package: "rsync"
+    - package: "speedtest-cli"
 
 ...

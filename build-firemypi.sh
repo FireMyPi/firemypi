@@ -13,8 +13,13 @@
 ## be used by or for any business in any way.
 ##
 
+#
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
 # 
-# FireMyPi: 	build-firemypi.sh
+# FireMyPi:  build-firemypi.sh
 #
 
 #
@@ -40,12 +45,6 @@ HAVEARGS=no
 SHOW=no
 BUILD_PORTABLE=false
 
-function usage()
-{
-	echo "${PNAME} {-n|--node #}"
-	exit 1
-}
-
 function add-option()
 {
 	OPTIONS="${OPTIONS} $*"
@@ -56,7 +55,6 @@ function add-var()
 	VARS="${VARS} ${1}"
 	[[ ${2} ]] && VARS="${VARS}=${2}"
 }
-
 
 check-license  || exit 1
 
@@ -125,15 +123,14 @@ do
 	shift
 done
 
-if [[ ${HAVEARGS} == "no" ]]
+if [[ ${HAVEARGS} == no ]]
 then
 	cat << HERE
 build-firemypi.sh - Build a FireMyPi IPFire Firewall Node
 
     --show            Show the status of the build environment
-    --node|-n {NODE}  Specify the node to build
-    --test            Build test configuration
-    --prod            Build production configuration
+    --node|-n <N>     Specify the node to build
+    --test|--prod     Build a test or production configuration
     --image           Build an image to write to a micro sd card
     --portable        Build a portable image for a remote location
     --force|-f        Force a build if config/image already exists

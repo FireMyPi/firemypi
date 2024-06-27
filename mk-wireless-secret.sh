@@ -14,7 +14,12 @@
 ##
 
 #
-# FireMyPi:	mk-wireless-secret.sh
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  mk-wireless-secret.sh
 #
 
 #
@@ -136,7 +141,9 @@ done
 
 echo -e ""
 
-cat << HERE > ${SECRETS}/${NODEFILE}
+create-secretfile ${SECRETS}/${NODEFILE}
+
+cat << HERE >> ${SECRETS}/${NODEFILE}
 ---
 
 ##
@@ -151,6 +158,15 @@ cat << HERE > ${SECRETS}/${NODEFILE}
 ## For the avoidance of doubt, FireMyPi is for personal use only and may not 
 ## be used by or for any business in any way.
 ##
+
+#
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  ${NODEFILE}
+#
 
 #
 # Wireless configuration for red0 for ${PREFIX}${NODE}.

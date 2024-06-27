@@ -14,7 +14,12 @@
 ##
 
 #
-# FireMyPi:	get-image-from-Downloads.sh
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  get-image-from-Downloads.sh
 #
 
 #
@@ -45,7 +50,7 @@ header Get IPFire Core Image
 
 COUNT=`ls image/ipfire*-aarch64.img 2>/dev/null | wc -l`
 
-if [[ ${COUNT} != 0 ]] && [[ -e "core-image-to-use.yml" ]]
+if [[ ${COUNT} != 0 ]] && [[ -e core-image-to-use.yml ]]
 then
 	HAVEIMAGE=yes
 	echo -e "You already have a core image in the build environment:\n"
@@ -92,7 +97,7 @@ echo -e "\t${GRN}${IMAGE}${NC}\n"
 
 read -p "Press <Enter> to continue or <Ctrl-C> to exit: "
 
-if [[ ${HAVEIMAGE} == "yes" ]]
+if [[ ${HAVEIMAGE} == yes ]]
 then
 	echo -e ""
 	./clean.sh --coreimage

@@ -14,11 +14,16 @@
 ##
 
 #
-# FireMyPi:	mk-webadmin-secret.sh
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
 #
 
 #
-# Create Web GUI admin secret file with a password entered on
+# FireMyPi:  mk-webadmin-secret.sh
+#
+
+#
+# Create the 'webadmin-secret.yml' file with a password entered on
 # the command line.  Once created, the same admin password
 # will be used for all nodes.
 #
@@ -84,9 +89,9 @@ done
 
 
 clear
-header Web GUI admin User Secret
+header IPFire Web GUI admin User Secret
 
-echo -e "Create Web GUI admin password in:\n"
+echo -e "Create IPFire Web GUI admin password in:\n"
 echo -e "${GRN}    ${SECRETFILE}${NC}\n"
 echo -e "The same admin password will be used for all nodes.\n"
 
@@ -109,7 +114,7 @@ fi
 # Prompt for password and verify before creating the hash.
 while [[ ${SECRET} == "NONE" ]]
 do
-        read -sp "Enter the Web GUI admin password: " SECRET
+        read -sp "Enter the IPFire Web GUI admin password: " SECRET
         echo ""
         read -sp "Re-enter password: " SECRET1
         if [[ "${SECRET}" != "${SECRET1}" ]]
@@ -119,7 +124,7 @@ do
         fi
         if [[ -z ${SECRET} ]]
         then
-                echo -e "\n\n${RED}ERROR: Blank password not allowed for Web GUI admin.${NC}\n"
+                echo -e "\n\n${RED}ERROR: Blank password not allowed for IPFire Web GUI admin.${NC}\n"
                 SECRET="NONE"
         fi
 done
@@ -143,7 +148,7 @@ create-secretfile ${SECRETFILE}
 
 write-secretfile ${SECRETFILE} ${SECRET}
 
-echo -e "\n\nWeb GUI admin password written to:\n"
+echo -e "\n\nIPFire Web GUI admin password written to:\n"
 echo -e "${GRN}    ${SECRETFILE}${NC}\n"
 
 echo -e "Done."

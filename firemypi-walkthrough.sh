@@ -14,7 +14,12 @@
 ##
 
 #
-# FireMyPi:     firemypi-walkthrough.sh
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  firemypi-walkthrough.sh
 #
 
 #
@@ -144,7 +149,7 @@ The first step in building a FireMyPi/IPFire firewall is to install the
 packages necessary for the build.  These are:
 
 	ansible		used as the build engine
-	apache2-utils	for creating the Web GUI admin password
+	apache2-utils	for creating the IPFire Web GUI admin password
 	openssl		for creating the root password and OpenVPN certificates
 	pwgen		for creating the Ipsec VPN pre-shared key
 	u-boot-tools	for modifying u-boot for the Raspberry Pi 4B
@@ -226,8 +231,8 @@ then
 	cat << HERE
 So we can skip this step.
 
-If you want to replace the core image in the future, just run
-'./get-image-from-Downloads.sh' from the command line.
+If you want to replace the core image in the future, just
+run './get-image-from-Downloads.sh' from the command line.
 
 HERE
 	read -p "Press <Enter> to continue or <Ctrl-C> to exit: "
@@ -297,8 +302,8 @@ then
 	cat << HERE
 So we can skip this step.
 
-If you want to change the root password in the future, just run
-'./mk-root-secret.yml' from the command line.
+If you want to change the root password in the future,
+just run './mk-root-secret.yml' from the command line.
 
 HERE
 	read -p "Press <Enter> to continue or <Ctrl-C> to exit: "
@@ -321,8 +326,9 @@ cat << HERE
 Now we need to create a password for the 'admin' user that will be used
 to log on to the IPFire Web GUI.
 
-This step will prompt you for the Web GUI admin password and store it as a
-password hash in the 'secrets' directory where it will be used for the build.
+This step will prompt you for the IPFire Web GUI admin password and store
+it as a password hash in the 'secrets' directory where it will be used
+for the build.
 
 The same IPFire Web GUI admin password will be used for all nodes built by 
 FireMyPi.  If you are in a single node configuration, this probably doesn't
@@ -339,7 +345,7 @@ if [[ -e "secrets/webadmin-secret.yml" ]]
 then
 	clear
 	walkthrough Step 4 - Create Admin Password
-	echo -e "You already have a Web GUI admin password in the 'secrets' directory:\n"
+	echo -e "You already have an IPFire Web GUI admin password in the 'secrets' directory:\n"
 	FILE=`ls secrets/webadmin-secret.yml`
 	FILE=`basename ${FILE}`
 	#FILE=`ls secrets/webadmin-secret.yml | head -n 1 | rev | cut -d / -f 1 | rev`
@@ -347,8 +353,8 @@ then
 	cat << HERE
 So we can skip this step.
 
-If you want to change the Web GUI admin password in the future, just run
-'./mk-webadmin-secret.yml' from the command line.
+If you want to change the IPFire Web GUI admin password in the future,
+just run './mk-webadmin-secret.yml' from the command line.
 
 HERE
 	read -p "Press <Enter> to continue or <Ctrl-C> to exit: "
@@ -465,17 +471,17 @@ cat << HERE
 node is contained the 'config/system_vars.yml' file and the 'secrets'
 files that you have created.
 
-Also notice that the node configuration file contains a template that you
-can use to specify and enable static leases for the DHCP server if desired.
-Static leases in the node configuration file are combined with leases in
-the node's 'fixleases' file during the build.
+Also notice that the node configuration file contains templates that you
+can use to specify fixed leases for the DHCP server and/or local hostnames
+for the DNS server.  Refer to 'doc/fmp-admin-guide.html' for more information
+on these features.
 
 HERE
 
 read -p "Press <Enter> to continue or <Ctrl-C> to exit: "
 
 walkthrough - Your Node Configuration
-cat "${CONFIG}/${PREFIX}${NODE}_vars.yml"
+more "${CONFIG}/${PREFIX}${NODE}_vars.yml"
 read -p "Press <Enter> to continue or <Ctrl-C> to exit: "
 ####
 fi

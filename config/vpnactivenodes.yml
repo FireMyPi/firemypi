@@ -14,19 +14,25 @@
 ##
 
 #
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  vpnactivenodes.yml
+#
+
+#
 # List the vpn nodes to configure and activate.
 #
 # The nodes that you activate here should all have 'include_vpn:'
 # set to 'true' when they are built.
 #
 
-    activevpnnodes:
+    vpnactivenodes:
 
     - vpnnode: 1
     - vpnnode: 2
     - vpnnode: 3
-      #    - vpnnode: 66
-      #    - vpnnode: 99
-      #    - vpnnode: 250
 
 ...

@@ -14,6 +14,11 @@
 ##
 
 #
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
 # FireMyPi:  image-p3.yml
 #
 
@@ -119,6 +124,13 @@
     state: link
   become: true
   when: include_ipblocklist
+
+- name: Install firemypi-pakfire.sh runonce script to rc.local
+  lineinfile:
+    path: "{{temp}}/p3/etc/sysconfig/rc.local"
+    line: "/root/firemypi-pakfire.sh"
+  become: true
+  when: include_pakfire
 
 - name: Sync filesystem
   command: sync

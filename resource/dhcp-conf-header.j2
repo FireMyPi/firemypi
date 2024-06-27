@@ -8,7 +8,7 @@ pool {
         range 192.168.{{node}}.100 192.168.{{node}}.199;
      }
         option subnet-mask 255.255.255.0;
-        option domain-name "{{domain}}";
+        option domain-name "localdomain";
 {% if test_prod == "test" %}
         option routers 192.168.{{node}}.{{green_testhost}};
 {% else %}

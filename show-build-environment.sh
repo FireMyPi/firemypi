@@ -13,8 +13,13 @@
 ## be used by or for any business in any way.
 ##
 
+#
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
 # 
-# FireMyPi: 	show-build-environment.sh
+# FireMyPi:  show-build-environment.sh
 #
 
 #
@@ -31,13 +36,19 @@ fi
 source fmp-common
 
 SHOW="no"
-CORENUM=0
-PREFIX="NONE"
 NODE=0
+PREFIX="NONE"
+CORENUM=0
 DDNS="NONE"
 OVPN="NONE"
 VPN="NONE"
+PRODIP="NONE"
+TESTIP="NONE"
 FWRULES="NONE"
+HOSTS="NONE"
+HOSTMODE="NONE"
+DHCP="NONE"
+FIXLMODE="NONE"
 MISSING=0
 SHOWFEATURES="false"
 
@@ -89,7 +100,12 @@ function show-config-files()
 			[[ ${STATE} ]] || abort "feature not found, is ${SYSTEMVARS} missing?"
 			if [[ ${STATE} == "true" ]]
 			then
-				printf "${RED}%-20s${NC}\n" missing
+				if  [[ -z ${FEATURE} ]]
+				then
+					printf "${RED}%-20s${NC}\n" missing
+				else
+					printf "${RED}%-20s${NC}\n" "missing - ${FEATURE}: true"
+				fi
 		                ((MISSING+=1))
 			else
 				printf "${YLW}%-20s${NC}\n" "missing - optional"
@@ -124,7 +140,7 @@ function show-system-features()
 			printf "${RED}%-20s${NC}\n" "false"
 		fi
 	done <<HERE
-include_dhcp
+include_dhcp_server
 include_httpd
 include_ssh
 HERE
@@ -143,13 +159,17 @@ HERE
 		fi
 	done <<HERE
 include_ddns
+include_dhcp_fixleases
 include_dnsaddservers
+include_dnssettings
 include_fireinfo
 include_fwrules
+include_hosts
 include_ipblocklist
 include_locationblock
 include_monitor_red0
 include_ovpn
+include_pakfire
 include_vpn
 HERE
 	echo ""
@@ -180,12 +200,12 @@ function show-node-prefix()
 	echo ""
 }
 
-function show-host-numbers()
+function show-ip-numbers()
 {
 	printf "%-32s" "The test firewall IP is:"
-	printf "${GRN}%-20s${NC}\n" 192.168.${NODE}.${TESTHOST}
+	printf "${GRN}%-20s${NC}\n" 192.168.${NODE}.${TESTIP}
 	printf "%-32s" "The firewall IP is:"
-	printf "${GRN}%-20s${NC}\n" 192.168.${NODE}.${HOST}
+	printf "${GRN}%-20s${NC}\n" 192.168.${NODE}.${PRODIP}
 	echo ""
 }
 
@@ -216,6 +236,7 @@ function show-built-nodes()
 function show-node-config()
 {
 	echo "Node configuration files:"
+
 	printf "%-32s" ${PREFIX}${NODE}_vars.yml
 	if [[ -e ${CONFIG}/${PREFIX}${NODE}_vars.yml ]]
 	then
@@ -224,24 +245,61 @@ function show-node-config()
 		printf "${RED}%-20s${NC}\n" missing
 		((MISSING+=1))
 	fi
+
 	printf "%-32s" ${PREFIX}${NODE}.fixleases
-	if [[ -e ${CONFIG}/${PREFIX}${NODE}.fixleases ]]
+	if [ "${DHCP}" == "false" ] || [ "${FIXLMODE}" == "" ]
 	then
-		printf "${GRN}%-20s${NC}\n" exists
-	else
 		printf "${YLW}%-20s${NC}\n" "missing - optional"
+	else
+		case "${FIXLMODE}" in
+			off | fixleases_var)
+				printf "${YLW}%-20s${NC}\n" "missing - optional"
+				;;
+			fixleases_file | combined)
+				if [[ -e ${CONFIG}/${PREFIX}${NODE}.fixleases ]]
+				then
+					printf "${GRN}%-20s${NC}\n" exists
+				else
+					printf "${RED}%-20s${NC}\n" "missing - fixleases_mode: ${FIXLMODE}"
+					((MISSING+=1))
+				fi
+				;;
+		esac
 	fi
+
 	printf "%-32s" ${PREFIX}${NODE}.fwrules
 	if [[ -e ${CONFIG}/${PREFIX}${NODE}.fwrules ]]
 	then
 		printf "${GRN}%-20s${NC}\n" exists
 	elif [[ ${FWRULES} == "true" ]]
 	then
-		printf "${RED}%-20s${NC}\n" "missing"
+		printf "${RED}%-20s${NC}\n" "missing - include_fwrules: true"
 		((MISSING+=1))
 	else
 		printf "${YLW}%-20s${NC}\n" "missing - optional"
 	fi
+
+	printf "%-32s" ${PREFIX}${NODE}.hosts
+	if [ "${HOSTS}" == "false" ] || [ "${HOSTMODE}" == "" ]
+	then
+		printf "${YLW}%-20s${NC}\n" "missing - optional"
+	else
+		case "${HOSTMODE}" in
+			off | hosts_var)
+				printf "${YLW}%-20s${NC}\n" "missing - optional"
+				;;
+			hosts_file | combined)
+				if [[ -e ${CONFIG}/${PREFIX}${NODE}.hosts ]]
+				then
+					printf "${GRN}%-20s${NC}\n" exists
+				else
+					printf "${RED}%-20s${NC}\n" "missing - hosts_mode: ${HOSTMODE}"
+					((MISSING+=1))
+				fi
+				;;
+		esac
+	fi
+
 	echo ""
 }
 
@@ -296,7 +354,7 @@ function show-node-features()
 			printf "${RED}%-20s${NC}\n" "false"
 		fi
 	done <<HERE
-include_dhcp
+include_dhcp_server
 include_httpd
 include_ssh
 HERE
@@ -316,13 +374,17 @@ HERE
 		fi
 	done <<HERE
 include_ddns
+include_dhcp_fixleases
 include_dnsaddservers
+include_dnssettings
 include_fireinfo
 include_fwrules
+include_hosts
 include_ipblocklist
 include_locationblock
 include_monitor_red0
 include_ovpn
+include_pakfire
 include_vpn
 HERE
 	echo ""
@@ -355,7 +417,7 @@ function check-mounts()
 	fi
 }
 
-function show-time-zone()
+function show-timezone()
 {
 	TIMEZONE=`get-config ${CONFIG}/${PREFIX}${NODE}_vars.yml timezone`
 	if [[ ${TIMEZONE} ]]
@@ -391,8 +453,8 @@ function show()
 			show-node-features
 		else
 			show-node-config
-			show-time-zone
-			show-host-numbers
+			show-timezone
+			show-ip-numbers
 			show-missing-count
 			show-node-deploy
 			show-node-portable
@@ -418,6 +480,17 @@ do
 			SHOWFEATURES="true"
 			;;
 		*)
+			cat << HERE
+Usage: show-build-environment.sh [--node|-n <NODE>] [--features]
+
+    no arguments      Show the global build environment.
+
+    --node|-n <N>     Show the build environment for the node specified.
+
+    --features        Show the default and optional features for the
+                      global build environment or the node specified.
+
+HERE
 			abort "invalid option '$1'"
 			;;
 	esac
@@ -441,17 +514,47 @@ OVPN=`get-config ${SYSTEMVARS} include_ovpn`
 VPN=`get-config ${SYSTEMVARS} include_vpn`
 [[ ${VPN} ]] || abort "include_vpn not found, is ${SYSTEMVARS} missing?"
 
-HOST=`get-config ${SYSTEMVARS} green_host`
-[[ ${HOST} ]] || abort "include_vpn not found, is ${SYSTEMVARS} missing?"
+PRODIP=`get-config ${SYSTEMVARS} green_host`
+[[ ${PRODIP} ]] || abort "green_host not found, is ${SYSTEMVARS} missing?"
 
-TESTHOST=`get-config ${SYSTEMVARS} green_testhost`
-[[ ${TESTHOST} ]] || abort "include_vpn not found, is ${SYSTEMVARS} missing?"
+TESTIP=`get-config ${SYSTEMVARS} green_testhost`
+[[ ${TESTIP} ]] || abort "green_testhost not found, is ${SYSTEMVARS} missing?"
 
 if [[ ${NODE} -ne 0 ]]
 then
 	FWRULES=`get-config ${CONFIG}/${PREFIX}${NODE}_vars.yml include_fwrules`
 	[[ -z ${FWRULES} ]] && FWRULES=`get-config ${SYSTEMVARS} include_fwrules`
 	[[ ${FWRULES} ]] || abort "include_fwrules not found, is ${SYSTEMVARS} missing?"
+fi
+
+HOSTS=`get-config ${SYSTEMVARS} include_hosts`
+[[ ${HOSTS} ]] || abort "include_hosts not found, is ${SYSTEMVARS} missing?"
+
+if [[ ${NODE} -ne 0 ]]
+then
+	if [[ -e ${CONFIG}/${PREFIX}${NODE}_vars.yml ]]
+	then
+		HOSTMODE=`get-config ${CONFIG}/${PREFIX}${NODE}_vars.yml hosts_mode`
+		[[ ${HOSTMODE} ]] || abort "hosts_mode not found, is a complete ${CONFIG}/${PREFIX}${NODE}_vars.yml missing?"
+	else
+		# we don't want to error out if there is no node config file
+		HOSTMODE=""
+	fi
+fi
+
+DHCP=`get-config ${SYSTEMVARS} include_dhcp_server`
+[[ ${DHCP} ]] || abort "include_dhcp_server not found, is ${SYSTEMVARS} missing?"
+
+if [[ ${NODE} -ne 0 ]]
+then
+	if [[ -e ${CONFIG}/${PREFIX}${NODE}_vars.yml ]]
+	then
+		FIXLMODE=`get-config ${CONFIG}/${PREFIX}${NODE}_vars.yml fixleases_mode`
+		[[ ${FIXLMODE} ]] || abort "fixleases_mode not found, is a complete ${CONFIG}/${PREFIX}${NODE}_vars.yml missing?"
+	else
+		# we don't want to error out if there is no node config file
+		FIXLMODE=""
+	fi
 fi
 
 show ${NODE}

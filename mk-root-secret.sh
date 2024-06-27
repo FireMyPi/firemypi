@@ -14,7 +14,12 @@
 ##
 
 #
-# FireMyPi:	mk-root-secret.sh
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  mk-root-secret.sh
 #
 
 #
@@ -36,25 +41,6 @@ then
 fi
 
 source fmp-common
-
-function write-secretfile()
-{
-	# Write the secret file.
-	USER=`whoami`
-	DATE=`date`
-	echo -e "---" > ${1}
-	echo -e "" >> ${1}
-	echo -e "#" >> ${1}
-	echo -e "# FireMyPi root password file" >> ${1}
-	echo -e "# created with mk-root-secret.sh by:" >> ${1}
-	echo -e "#" >> ${1}
-	echo -e "#   user: ${USER}" >> ${1}
-	echo -e "#   date: ${DATE}" >> ${1}
-	echo -e "#\n" >> ${1}
-	echo -e "    rootsecret: \"${2}\"" >> ${1}
-	echo -e "" >> ${1}
-	echo -e "..." >> ${1}
-}
 
 SECRET="NONE"
 SECRETFILE="secrets/root-secret.yml"
@@ -113,19 +99,58 @@ do
 	SECRET=`openssl passwd -6`
 	if [[ -z ${SECRET} ]]
 	then
-		echo -e "\n${RED}ERROR: Passwords didn't match.${NC}\n"
+		echo -e "\n${RED}ERROR: Passwords don't match.${NC}\n"
 		SECRET="NONE"
 	fi
 	if [[ ${SECRET} == "<NULL>" ]]
 	then
-		echo -e "\n${RED}ERROR: Can not enter a blank password for root.${NC}\n"
+		echo -e "\n${RED}ERROR: Blank password not allowed for root.${NC}\n"
 		SECRET="NONE"
 	fi
 done
 
 create-secretfile ${SECRETFILE}
 
-write-secretfile ${SECRETFILE} ${SECRET}
+# Write the secret file.
+USER=`whoami`
+DATE=`date`
+cat << HERE >> ${SECRETFILE}
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  root-secret.yml
+#
+
+#
+# FireMyPi root password file
+# created with mk-root-secret.sh by:
+#
+#   user: ${USER}
+#   date: ${DATE}
+#
+
+    rootsecret: "${SECRET}"
+
+...
+HERE
 
 echo -e "\nRoot password written to:\n"
 echo -e "${GRN}    ${SECRETFILE}${NC}\n"

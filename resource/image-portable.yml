@@ -160,6 +160,13 @@
   become: true
   when: include_ipblocklist
 
+- name: rc.local for pakfire
+  copy:
+    src: "{{temp}}/p3/etc/sysconfig/rc.local"
+    dest: "{{portabledir}}/p3/etc/sysconfig/"
+    mode: '744'
+  become: true
+
 - name: Create the portable build
   archive:
     path: "{{portabledir}}/p*"

@@ -1,0 +1,54 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
+# FireMyPi:  dhcp-server.yml
+#
+
+#
+# This playbook creates the dhcp server configuration.
+#
+
+
+- name: Create dhcp directory
+  file:
+    dest: "{{var_ipfire}}/dhcp"
+    state: directory
+
+- name: Create DHCP settings file
+  template:
+    src: "{{builddir}}/resource/dhcp-settings.j2"
+    dest: "{{var_ipfire}}/dhcp/settings"
+
+- name: Create dhcpd.conf file
+  template:
+    src: "{{builddir}}/resource/dhcp-conf-header.j2"
+    dest: "{{var_ipfire}}/dhcp/dhcpd.conf"
+
+- name: Add fixed leases to dhcpd.conf
+  import_tasks: dhcp-fixleases.yml 
+  when: include_dhcp_fixleases
+
+- name: Add trailer to dhcpd.conf
+  lineinfile:
+    path: "{{var_ipfire}}/dhcp/dhcpd.conf"
+    line: include "/var/ipfire/dhcp/dhcpd.conf.local";
+
+...

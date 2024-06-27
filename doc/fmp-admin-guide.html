@@ -23,8 +23,9 @@
   <li><a href="#how-firemypi-works">How FireMyPi Works</a></li>
   <li><a href="#documentation">Documentation</a></li>
   <li><a href="#copyright-and-license">Copyright and License</a></li>
+  <li><a href="#version">Version</a></li>
   </ul></li>
-  <li><a href="#firemypi-quickstart-guide">FireMyPi QuickStart Guide</a>
+  <li><a href="#quickstart-guide">QuickStart Guide</a>
   <ul>
   <li><a href="#configure-and-build-a-test-standalone-firewall">Configure and Build a Test Standalone Firewall</a></li>
   <li><a href="#configure-and-build-a-production-standalone-firewall">Configure and Build a Production Standalone Firewall</a></li>
@@ -46,9 +47,10 @@
   <li><a href="#configuring-firemypi">Configuring FireMyPi</a>
   <ul>
   <li><a href="#configuration-files">Configuration Files</a></li>
+  <li><a href="#overiding-global-configuration-variables">Overiding Global Configuration Variables</a></li>
   </ul></li>
-  <li><a href="#migrating-from-ipfire-to-firemypi">Migrating from IPFire to FireMyPi</a></li>
-  <li><a href="#firemypi-commands">FireMyPi Commands</a>
+  <li><a href="#migrating-to-firemypi">Migrating To FireMyPi</a></li>
+  <li><a href="#commands">Commands</a>
   <ul>
   <li><a href="#accept-license.sh">accept-license.sh</a></li>
   <li><a href="#build-firemypi.sh">build-firemypi.sh</a></li>
@@ -56,19 +58,20 @@
   <li><a href="#firemypi-walkthrough.sh">firemypi-walkthrough.sh</a></li>
   <li><a href="#get-fixleases.sh">get-fixleases.sh</a></li>
   <li><a href="#get-fwrules.sh">get-fwrules.sh</a></li>
+  <li><a href="#get-hosts.sh">get-hosts.sh</a></li>
   <li><a href="#get-image-from-downloads.sh">get-image-from-Downloads.sh</a></li>
   <li><a href="#mk-ddns-secret.sh">mk-ddns-secret.sh</a></li>
   <li><a href="#mk-node-config.sh">mk-node-config.sh</a></li>
   <li><a href="#mk-ovpn-p12-secret.sh">mk-ovpn-p12-secret.sh</a></li>
-  <li><a href="#mk-vpnpsk-secret.sh">mk-vpnpsk-secret.sh</a></li>
   <li><a href="#mk-root-secret.sh">mk-root-secret.sh</a></li>
+  <li><a href="#mk-vpnpsk-secret.sh">mk-vpnpsk-secret.sh</a></li>
   <li><a href="#mk-webadmin-secret.sh">mk-webadmin-secret.sh</a></li>
   <li><a href="#mk-wireless-secret.sh">mk-wireless-secret.sh</a></li>
   <li><a href="#portable-util.sh">portable-util.sh</a></li>
   <li><a href="#show-build-environment.sh">show-build-environment.sh</a></li>
   <li><a href="#write-microsd-card.sh">write-microsd-card.sh</a></li>
   </ul></li>
-  <li><a href="#firemypi-secrets-files">FireMyPi Secrets Files</a>
+  <li><a href="#secrets">Secrets</a>
   <ul>
   <li><a href="#ddns-secret.yml">ddns-secret.yml</a></li>
   <li><a href="#noden_wireless-secret.yml">nodeN_wireless-secret.yml</a></li>
@@ -82,29 +85,35 @@
   <li><a href="#feature-configuration">Feature Configuration</a>
   <ul>
   <li><a href="#include_ddns">include_ddns</a></li>
-  <li><a href="#include_dhcp">include_dhcp</a></li>
+  <li><a href="#include_dhcp_fixleases">include_dhcp_fixleases</a></li>
+  <li><a href="#include_dhcp_server">include_dhcp_server</a></li>
   <li><a href="#include_dnsaddservers">include_dnsaddservers</a></li>
+  <li><a href="#include_dnssettings">include_dnssettings</a></li>
   <li><a href="#include_fireinfo">include_fireinfo</a></li>
   <li><a href="#include_fwrules">include_fwrules</a></li>
+  <li><a href="#include_hosts">include_hosts</a></li>
   <li><a href="#include_httpd">include_httpd</a></li>
   <li><a href="#include_ipblocklist">include_ipblocklist</a></li>
   <li><a href="#include_locationblock">include_locationblock</a></li>
   <li><a href="#include_monitor_red0">include_monitor_red0</a></li>
   <li><a href="#include_ovpn">include_ovpn</a></li>
+  <li><a href="#include_pakfire">include_pakfire</a></li>
   <li><a href="#include_ssh">include_ssh</a></li>
   <li><a href="#include_vpn">include_vpn</a></li>
   </ul></li>
-  <li><a href="#firemypi-firewall-advice">FireMyPi Firewall Advice</a>
+  <li><a href="#firewall-management">Firewall Management</a>
   <ul>
+  <li><a href="#backups">Backups</a></li>
   <li><a href="#organize-your-home-network">Organize Your Home Network</a></li>
   <li><a href="#check-the-logs">Check the Logs</a></li>
   <li><a href="#use-location-block">Use Location Block</a></li>
   <li><a href="#use-ip-address-blocklists">Use IP Address Blocklists</a></li>
   <li><a href="#block-phone-home-devices">Block “Phone Home” Devices</a></li>
   </ul></li>
-  <li><a href="#firemypi-notes">FireMyPi Notes</a></li>
+  <li><a href="#notes">Notes</a></li>
   <li><a href="#donate-to-firemypi">Donate to FireMyPi</a></li>
   <li><a href="#copyright-and-license-1">Copyright and License</a></li>
+  <li><a href="#version-1">Version</a></li>
   </ul>
 		</nav>
 		<pre>
@@ -116,26 +125,28 @@
 		<h1 id="firemypi-administrators-guide">FireMyPi Administrator’s Guide</h1>
   <h1 id="welcome-to-firemypi">Welcome to FireMyPi!</h1>
   <h2 id="overview">Overview</h2>
-  <p><a href="http://firemypi.org">FireMyPi</a> is a configuration tool designed to help you to configure and install the <a href="http://ipfire.org">IPFire</a> firewall on your Raspberry Pi. It eliminates the need to run the IPFire setup program and allows you to directly create a micro sd card installation of IPFire that will boot up and run on your Raspberry Pi “out of the box”.</p>
-  <p>Everyone should have a firewall between their home network and the internet. You may already have a network router device that includes a built in firewall, but those are usually black boxes with limited options that are difficult to configure, maintain, and monitor. One of the great benefits of the IPFire firewall is the IPFire Web GUI which allows you to easily monitor and customize your firewall.</p>
-  <p>FireMyPi with IPFire allows you to create a low cost firewall on a Raspberry Pi that “just works” without extensive configuration. You can be in control, monitor your network traffic and customize your firewall to meet your needs. For the price of a Raspberry Pi and a USB ethernet dongle FireMyPi allows you to do just that.</p>
-  <p>FireMyPi configures IPFire for the Raspberry Pi without running the IPFire setup tool. FireMyPi disables the serial interface for IPFire, so no need to edit any uBoot files, and automatically identifies and configures the internal and external interfaces on the Raspberry Pi for IPFire. It also includes the basic settings that would be set with the IPFire setup program as well as advanced options that would be set with the IPFire Web GUI. This saves time for configuration and allows you to have a <strong>reviewable and reproducible</strong> configuration separate from the firewall. If your micro sd card breaks or gets corrupted, (it happens), you can just rebuild the configuration and get your firewall running again. In fact, we recommend that you create two micro sd’s with your firewall configuration so that you always have a backup ready at hand.</p>
+  <p><a href="https://github.com/FireMyPi">FireMyPi</a> is a configuration tool designed to help you to configure and install the <a href="https://www.ipfire.org">IPFire</a> firewall for your home network on a Raspberry Pi. It allows you to create a micro sd card installation of IPFire that will boot up and run on your Raspberry Pi “out of the box”.</p>
+  <p>Everyone should have a firewall between their home network and the internet. You may already have a cable modem or router device that includes a built in firewall, but those are usually black boxes with limited options that are difficult to configure, maintain, and monitor.</p>
+  <p>FireMyPi allows you to easily create a low cost firewall on a Raspberry Pi that “just works” without extensive configuration. You can be in control, monitor your network traffic and customize your firewall to meet your needs. For the price of a Raspberry Pi a USB ethernet dongle and a couple of micro sd cards, FireMyPi allows you to do just that.</p>
+  <p>FireMyPi configures IPFire for the Raspberry Pi without running the IPFire setup tool. It disables the serial interface for IPFire, so no need to edit any U-Boot files, and automatically identifies and configures the internal and external interfaces on the Raspberry Pi for IPFire. It also includes the basic settings that would be set with the IPFire setup program as well as advanced options that would be set with the IPFire Web GUI. This saves time for configuration and allows you to have a <strong>reviewable and reproducible</strong> configuration separate from the firewall. If your micro sd card breaks or gets corrupted, (it happens), you can just rebuild the configuration and get your firewall running again. In fact, we recommend that you create two micro sd’s with your firewall configuration so that you always have a backup ready at hand.</p>
   <p>FireMyPi was designed with the ability to configure and connect multiple separate firewall nodes with Ipsec VPN tunnels. If you need to connect multiple home networks, FireMyPi allows you to do this easily.</p>
   <h2 id="firemypi-includes-the-following-basic-settings">FireMyPi includes the following basic settings:</h2>
   <ul>
-  <li>Turns off the serial console for the Raspberry Pi.</li>
+  <li>Turns off the serial console for the Raspberry Pi in U-Boot.</li>
   <li>Automatically configures the IPFire green0 and red0 interfaces on boot.</li>
   <li>Allows you to use either a USB ethernet dongle or the Raspberry Pi internal wireless nic as the red0 interface.</li>
-  <li>Fixes an issue with the uBoot configuration that did not allow the Rasperry Pi 4 Model B to boot correctly.</li>
+  <li>Fixes an issue with the U-Boot configuration that did not allow some Rasperry Pi 4B models to boot correctly.</li>
   <li>Turns on file system journaling for the IPFire root file system on the micro sd card.</li>
   <li>Turns on SSH on the green0 interface for headless access to the firewall from the internal network only.</li>
   <li>Limits the IPFire Web GUI to the green0 interface for internal access only.</li>
   <li>Configures timezone, hostname, keyboard and language.</li>
-  <li>Configures the root password and the Web GUI admin password.</li>
+  <li>Configures the root password and the IPFire Web GUI admin password.</li>
   <li>Configures and activates the DHCP server in IPFire.</li>
   </ul>
   <h2 id="firemypi-also-includes-configuration-options-that-allow-you-to-easily">FireMyPi also includes configuration options that allow you to easily:</h2>
   <ul>
+  <li>Include fixed IP addresses in the DHCP configuration.</li>
+  <li>Include local hostnames in the DNS configuration.</li>
   <li>Configure dynamic DNS.</li>
   <li>Add additional internet DNS servers.</li>
   <li>Turn on Location Blocking.</li>
@@ -144,15 +155,15 @@
   <li>Configure OpenVPN for remote (Road Warrior) access.</li>
   <li>Turn on the Fireinfo service.</li>
   <li>Monitor and optionally restart the red0 interface to recover from ISP network connection issues.</li>
-  <li>Create a portable build that can be transferred to a remote node location.</li>
+  <li>Create a small portable build that can be transferred to a remote node location.</li>
   </ul>
   <h2 id="how-firemypi-works">How FireMyPi Works</h2>
   <p>FireMyPi is built on top of the IPFire firewall program and provides automated configuration to manage one or more firewall machines in a network. The <a href="fmp-network-diagram.png">network diagram</a> shows the key parts.</p>
   <p><img src="fmp-network-diagram.png" /></p>
   <p>The configuration information for FireMyPi consists of a set of YAML files stored in the <em>config</em> directory and in the <em>secrets</em> directory.</p>
   <p>When a build is run, FireMyPi uses the configuration files to create a <em>config</em> and <em>image</em> for the node being built.</p>
-  <p>The <em>config</em> part of the build creates an overlay that is extracted onto the /var/ipfire directory and overwrites the default IPFire configuration files. The <em>config</em> creation includes a one-time run script that installs the configuration when the firewall is booted.</p>
-  <p>The <em>image</em> creation step writes the <em>config</em> to an IPFire core image and installs the hooks necessary to run the configuration script. When the <em>image</em> creation step is complete, the result is a pre-configured image that can be written to a micro sd card and booted on the Raspberry Pi.</p>
+  <p>The <em>config</em> portion of the build creates an overlay that will be extracted onto the /var/ipfire directory and overwrite the default IPFire configuration files. The <em>config</em> creation includes a one-time run script that installs the configuration the first time the firewall is booted.</p>
+  <p>The <em>image</em> creation writes the <em>config</em> to an IPFire core image and installs the hooks necessary to run the configuration script. When the <em>image</em> creation is complete, the result is a pre-configured image that can be written to a micro sd card and booted on the Raspberry Pi.</p>
   <h2 id="documentation">Documentation</h2>
   <p>Refer to the <a href="fmp-admin-guide.html">FireMyPi Administrator’s Guide</a> for complete instructions and guidance.</p>
   <h2 id="copyright-and-license">Copyright and License</h2>
@@ -162,8 +173,21 @@
   <li>The full text of the license can be found in the included LICENSE file or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.</li>
   <li>For the avoidance of doubt, FireMyPi is for personal use only and may not be used by or for any business in any way.</li>
   </ul>
+  <h2 id="version">Version</h2>
+  <table>
+  <tbody>
+  <tr class="odd">
+  <td>Version:</td>
+  <td style="text-align: left;">v1.1</td>
+  </tr>
+  <tr class="even">
+  <td>Date:</td>
+  <td style="text-align: left;">Wed Jun 26 23:17:45 2024 -0600</td>
+  </tr>
+  </tbody>
+  </table>
   <hr />
-  <h1 id="firemypi-quickstart-guide">FireMyPi QuickStart Guide</h1>
+  <h1 id="quickstart-guide">QuickStart Guide</h1>
   <p>The <em>firemypi-walkthrough.sh</em> script automates the steps in this QuickStart Guide and produces the same single node standalone test firewall. Consider running the <em>firemypi-walkthrough.sh</em> script in lieu of or in combination with this QuickStart Guide. To run the walkthough, simply invoke the walkthrough script.</p>
   <pre id="code"><code>      ./firemypi-walkthrough.sh</code></pre>
   <p>This QuickStart Guide shows you how to configure and build a single node standalone test firewall. Use the standalone firewall configuration if your configuration will contain a single node. This is the most common configuration for a home user.</p>
@@ -185,7 +209,7 @@
   <li>Download aarch64 Flash Image from <a href="https://www.ipfire.org/downloads">ipfire.org</a> either with your web browser or from the command line. For example:</li>
   </ol>
   <pre id="code"><code>      cd ~/Download
-      wget https://downloads.ipfire.org/releases/ipfire-2.x/2.29-core185/ipfire-2.29-core185-aarch64.img.xz</code></pre>
+      wget https://downloads.ipfire.org/releases/ipfire-2.x/2.29-core186/ipfire-2.29-core186-aarch64.img.xz</code></pre>
   <ol start="4" type="1">
   <li>Change to the firemypi directory.</li>
   </ol>
@@ -199,7 +223,7 @@
   </ol>
   <pre id="code"><code>      ./mk-root-secret.sh</code></pre>
   <ol start="7" type="1">
-  <li>Run <em>mk-webadmin-secret.sh</em> to create the Web GUI admin password secret file.</li>
+  <li>Run <em>mk-webadmin-secret.sh</em> to create the IPFire Web GUI admin password secret file.</li>
   </ol>
   <pre id="code"><code>      ./mk-webadmin-secret.sh</code></pre>
   <ol start="8" type="1">
@@ -223,7 +247,7 @@
   <li>The test firewall can be accessed at <em>https://192.168.1.245:444</em> or by <em>ssh root@192.168.1.245</em>.</li>
   </ol>
   <h2 id="configure-and-build-a-production-standalone-firewall">Configure and Build a Production Standalone Firewall</h2>
-  <p>Once you have successfully built a test firewall, spend some time familiarizing yourself with the IPFire Web GUI. The Web GUI is where you can customize and fine tune your firewall. The <em>Logs</em> section of the Web GUI is also helpful to determine where hostile packets are coming from and see how your firewall is protecting your network.</p>
+  <p>Once you have successfully built a test firewall, spend some time familiarizing yourself with the IPFire Web GUI. The IPFire Web GUI is where you can customize and fine tune your firewall.</p>
   <p>When you are ready to put your firewall in service, it’s easy to build a production firewall. Just run:</p>
   <pre id="code"><code>    ./build-firemypi.sh --node 1 --prod --image</code></pre>
   <p>Refer to <a href="NetworkDiagram.pdf">Network Diagram</a> for connections for your production firewall.</p>
@@ -240,7 +264,7 @@
   <p>Ditto on the windows thing.</p>
   <h2 id="pi-on-pi-bootstrap">Pi on Pi Bootstrap</h2>
   <p>You have a Raspberry Pi that you want to use for your firewall, so why not use the same Raspberry Pi to build your firewall with FireMyPi! This is such a classic bootstrap.</p>
-  <p>Install a linux distro on your Raspberry Pi and then pull down and run the FireMyPi suite. Swap micro sd cards and boot the firewall.</p>
+  <p>Install a linux distro on your Raspberry Pi. Then download and run FireMyPi to build your firewall. Write the image to a separate micro sd card. Swap the micro sd cards and boot the firewall.</p>
   <p>Classic.</p>
   <hr />
   <h1 id="choosing-hardware-for-your-firewall">Choosing Hardware For Your Firewall</h1>
@@ -251,7 +275,7 @@
   <li>Wireless Access Point</li>
   </ul>
   <h2 id="raspberry-pi">Raspberry Pi</h2>
-  <p>FireMyPi has been tested on Raspberry Pi board versions 3B+ (1G), 4B Rev 1.1 (4G) and 4B Rev 1.5. (8G). Memory usage tops out at about 500M so memory wasn’t an issue for any of these boards. FireMyPi identifies the Raspberry Pi onboard ethernet controller and assigns it to green0 based on the drivers used by the onboard nic. Currently FireMyPi will identify and assign onboard nics that use the bcmgenet, lan78xx and smsc95xx drivers. In the home environment we have not seen any issues with connection speed/throughput even when using a dongle on the USBv2 interfaces for the internet connection.</p>
+  <p>FireMyPi has been tested on Raspberry Pi board versions 3B+ (1G), 4B Rev 1.1 (4G) and 4B Rev 1.5. (8G). Memory usage tops out at about 500M so memory wasn’t an issue for any of these boards. FireMyPi identifies the Raspberry Pi onboard ethernet controller and assigns it to green0 based on the drivers used by the onboard nic. Currently FireMyPi will identify and assign onboard nics that use the bcmgenet, lan78xx and smsc95xx drivers. In the home environment we have not seen any issues with connection speed/throughput even when using a dongle on the USBv2 interfaces for the internet connection. The main difference we’ve seen between the Pi3 and Pi4 versions is that the Pi4 versions boot faster.</p>
   <h2 id="ethernet-dongle">Ethernet Dongle</h2>
   <p>FireMyPi identifies the ethernet dongle and assigns it to red0 based on the drivers used by the ethernet dongle. Currently FireMyPi will identify and assign dongles that use the asix, ax88179_178a, r8152, and pegasus drivers. One thing to note is that some ethernet dongles use the smsc95xx driver. Since some versions of the Raspberry Pi also use the smsc95xx driver, if your dongle uses the smsc95xx drivers, get another dongle or FireMyPi will get confused.</p>
   <p>It’s pretty easy to identify the driver that your dongle uses. Just plug the dongle into your linux system and run the following command:</p>
@@ -293,7 +317,7 @@
   <p>If you connect the wired home network to the WAN port of the device, the device will get an IP address from the firewall’s DHCP server and will still work, but the wireless network will be separate from the wired network.</p>
   <hr />
   <h1 id="configuring-firemypi">Configuring FireMyPi</h1>
-  <p>FireMyPi uses YAML files to store its configuration information. These files are found in the <em>config</em> and <em>secrets</em> directory. The <em>config</em> directory contains the global configuration for FireMyPi features and specific configuration information for individual nodes.</p>
+  <p>FireMyPi uses YAML files to store its configuration information. These files are found in the <em>config</em> and <em>secrets</em> directory. The <em>config</em> directory contains the global configuration for FireMyPi features and specific configuration information for individual nodes. The <em>secrets</em> directory contains confidential information such as passwords, keys and certificates.</p>
   <p>When FireMyPi runs a build, it first reads <em>config/system_vars.yml</em>. It then reads the <em>config/nodeN_vars.yml</em> file for the node being built. Additional <em>yml</em> files in the <em>config</em> and <em>secrets</em> directories are read as they are needed during the build process.</p>
   <p>Because the node configuration file is read after the system configuration. The global variables set in <em>config/system_vars.yml</em> can be overridden on a node by node basis in the node configuration files by copying the appropriate global variable from the the system configuration file to the node configuration file.</p>
   <p>YAML has some peculiarities, so when editing any of the <em>yml</em> files, do not change any of the formatting of the files. Leave the indentations and spacing as they are and keep with the same quotation marks that you find in the files.</p>
@@ -349,7 +373,7 @@
   </blockquote>
   <p><em>disable_setup:</em></p>
   <blockquote>
-  <p>Disable the regular IPFire setup program from running on a first boot.</p>
+  <p>Disable the IPFire ‘setup’ program from running on a first boot.</p>
   </blockquote>
   <p><em>include_ssh:</em></p>
   <blockquote>
@@ -357,11 +381,30 @@
   </blockquote>
   <p><em>include_httpd:</em></p>
   <blockquote>
-  <p>Configure the web server for the IPFire Web GUI to only listen on the internal <em>green0</em> interface.</p>
+  <p>Configure the web server for the IPFire Web GUI to listen only on the internal <em>green0</em> interface.</p>
   </blockquote>
-  <p><em>include_dhcp:</em></p>
+  <p><em>include_dhcp_server:</em></p>
   <blockquote>
   <p>Configure and start the DHCP server on the firewall. Make sure that you don’t have another DHCP server running on your home network. The start and end for the DHCP address range can also be set.</p>
+  </blockquote>
+  <p><em>include_ddns:</em></p>
+  <blockquote>
+  <p>Include Dynamic DNS update for the nodes that are built. Only important if your firewall name will be visible to the internet such as for OpenVPN access or Ipsec VPN tunnels.</p>
+  </blockquote>
+  <blockquote>
+  <p>The <em>ddns_auth_method</em> variable is used to configure the authentication type for the Dynamic DNS update provider. The <em>secret/ddns-secret.yml</em> file contains the authentication credentials.</p>
+  </blockquote>
+  <p><em>include_dhcp_fixleases:</em></p>
+  <blockquote>
+  <p>Add fixed leases to the DHCP server configuration. Fixed leases are configured in ‘config/nodeN_vars.yml’ and ‘config/nodeN.fixleases’.</p>
+  </blockquote>
+  <p><em>include_dnsaddservers:</em></p>
+  <blockquote>
+  <p>Add additional DNS servers to your firewall configurations. May be necessary if IPFire does not work with your ISP nameservers.</p>
+  </blockquote>
+  <p><em>include_dnssettings:</em></p>
+  <blockquote>
+  <p>Can be used to customize the settings for the DNS server.</p>
   </blockquote>
   <p><em>include_fireinfo:</em></p>
   <blockquote>
@@ -371,6 +414,18 @@
   <blockquote>
   <p>Include firewall rules that you have written using the IPFire Web GUI and downloaded using the <em>get-fwrules.sh</em> script in the firewall builds.</p>
   </blockquote>
+  <p><em>include_hosts:</em></p>
+  <blockquote>
+  <p>Include local DNS host names which can be specified in the <em>config/nodeN_vars.yml</em> file and/or the <em>config/nodeN.hosts</em> file.</p>
+  </blockquote>
+  <p><em>include_ipblocklist:</em></p>
+  <blockquote>
+  <p>Configure and turn on public IP Address Blocklist blocking for your nodes.</p>
+  </blockquote>
+  <p><em>include_locationblock:</em></p>
+  <blockquote>
+  <p>Configure and turn on location based IP address blocking for your nodes.</p>
+  </blockquote>
   <p><em>include_monitor_red0:</em></p>
   <blockquote>
   <p>Include and start the monitor for the external <em>red0</em> interface.</p>
@@ -378,36 +433,17 @@
   <blockquote>
   <p>The <em>monitor_red0_</em> variables are used to configure the monitor including the monitoring start delay, the monitoring interval and whether the monitor will attempt to restart the red0 interface if it is down.</p>
   </blockquote>
-  <p><em>include_ddns:</em></p>
+  <p><em>include_ovpn:</em></p>
   <blockquote>
-  <p>Include Dynamic DNS update for the nodes that are built. Only important if your firewall name will be visible to the internet such as for OpenVPN access or Ipsec VPN tunnels.</p>
+  <p>Configure and turn on OpenVPN for remote access to your nodes from the internet.</p>
   </blockquote>
+  <p><em>include_pakfire:</em></p>
   <blockquote>
-  <p>The <em>ddns_auth_method</em> variable is used to configure the authentication type for the Dynamic DNS update provider. The <em>secret/ddns-secret.yml</em> file contains the authentication credentials.</p>
-  </blockquote>
-  <p><em>include_dnsaddservers:</em></p>
-  <blockquote>
-  <p>Add additional DNS servers to your firewall configurations. May be necessary if IPFire does not work with your ISP nameservers.</p>
-  </blockquote>
-  <p><em>use_isp_nameservers:</em></p>
-  <blockquote>
-  <p>When paired with <em>include_dnsaddservers:</em> can be used to turn off the use of your ISP’s name servers for nodes.</p>
-  </blockquote>
-  <p><em>include_locationblock:</em></p>
-  <blockquote>
-  <p>Configure and turn on location based IP address blocking for your nodes.</p>
-  </blockquote>
-  <p><em>include_ipblocklist:</em></p>
-  <blockquote>
-  <p>Configure and turn on public IP Address Blocklist blocking for your nodes.</p>
+  <p>Install add-on packages when the firewall first boots.</p>
   </blockquote>
   <p><em>include_vpn:</em></p>
   <blockquote>
   <p>Configure and turn on Ipsec VPN tunnels to connect your nodes.</p>
-  </blockquote>
-  <p><em>include_ovpn:</em></p>
-  <blockquote>
-  <p>Configure and turn on OpenVPN for remote access to your nodes from the internet.</p>
   </blockquote>
   <p><strong>config/nodeN_vars.yml.template</strong></p>
   <blockquote>
@@ -421,13 +457,101 @@
   <blockquote>
   <p>If <em>true</em>, the firewall will be configured to use the Raspberry Pi wireless nic to connect to the external network. Note that this requires a <em>secrets/nodeN_wireless-secret.yml</em> file which can be created by <em>mk-wireless-secret.sh</em>.</p>
   </blockquote>
-  <p><em>dhcp_static_enabled:</em></p>
+  <p><em>fixleases_mode:</em></p>
   <blockquote>
-  <p>Turns on static (fixed) leases for the node that will be read from the node configuration file. You can use <em>get-fixleases.sh</em> to copy DHCP fixed leases from a running IPFire firewall. If static leases are specified in both a <em>nodeN_vars.yml</em> file and a <em>nodeN.fixleases</em> file the leases from both files will be combined to produce the DHCP server configuration.</p>
+  <p>The desired mode of operation for the node when <em>include_dhcp: true</em>. The options are:</p>
   </blockquote>
-  <p><em>dhcp_static:</em></p>
   <blockquote>
-  <p>A list of the hostnames, mac addresses and IP addresses for static hosts to be included in the DHCP server configuration when <em>dhcp_static_enabled: true</em>. Sample hosts are included showing the format of the list.</p>
+  <blockquote>
+  <p><em>off</em> - Turns off DHCP fixed leases for the node. No <em>fixleases</em> file is created for the config.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>fixleases_var</em> - Reads fixed leases from the <em>fixleases:</em> variable in the <em>config/nodeN_vars.yml</em> file.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>fixleases_file</em> - Reads fixed leases from the <em>config/nodeN.fixleases</em> file for the node to create the <em>fixleases</em> file.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>combined</em> - Reads fixed leases from both the <em>fixleases:</em> variable in the <em>config/nodeN_vars.yml</em> file and <em>config/nodeN.fixleases</em> file. The records are then combined and deduplicated to create the <em>fixleases</em> file.</p>
+  </blockquote>
+  </blockquote>
+  <p><em>fixleases:</em></p>
+  <blockquote>
+  <p>A list of the hostnames, mac addresses and IP addresses for fixed leases to be included in the DHCP server configuration. Sample hosts are included showing the format of the list.</p>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>mac:</em> - The MAC Address for the host.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>ip:</em> - The IP Address for the host.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>remark:</em> - The remark for the host that will appear on the <em>Network/DHCP Server</em> screen in the IPFire Web GUI.</p>
+  </blockquote>
+  </blockquote>
+  <p><em>hosts_mode:</em></p>
+  <blockquote>
+  <p>The desired mode of operation for the node when <em>include_hosts: true</em>. The options are:</p>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>off</em> - Turns off hostnames for the node. No <em>hosts</em> file is created for the config.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>hosts_var</em> - Reads hostnames from the <em>hosts:</em> variable in the <em>config/nodeN_vars.yml</em> file.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>hosts_file</em> - Reads hostnames from the <em>config/nodeN.hosts</em> file for the node to create the <em>hosts</em> file.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>combined</em> - Reads hostnames from both the <em>hosts:</em> variable in the <em>config/nodeN_vars.yml</em> file and <em>config/nodeN.hosts</em> file. The records are then combined and deduplicated to create the <em>hosts</em> file.</p>
+  </blockquote>
+  </blockquote>
+  <p><em>hosts:</em></p>
+  <blockquote>
+  <p>A list of the hostnames and IP addresses for hostnames to be included by the local DNS server. Sample hosts are included showing the format of the list.</p>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>hostname:</em> - The hostname for the host to be included by DNS.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>ip:</em> - The IP Address of the host.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>domain:</em> - The domain name for the host. Use <em>localdomain</em> for hosts on your home network.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>generate_ptr:</em> - If on, create a DNS PTR record for reverse address lookup.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>enabled:</em> - If on, activate the record in DNS.</p>
+  </blockquote>
   </blockquote>
   <p><strong>config/nodeN.fixleases</strong></p>
   <blockquote>
@@ -437,11 +561,11 @@
   <blockquote>
   <p>File containing firewall rules copied from a running IPFire firewall using <em>get-fwrules.sh</em>.</p>
   </blockquote>
-  <p><strong>config/active_vpn_nodes.yml</strong></p>
+  <p><strong>config/nodeN.hosts</strong></p>
   <blockquote>
-  <p>Contains a list of nodes for active Ipsec VPN tunnels when <em>include_vpn: true</em>.</p>
+  <p>File containing hostnames copied from a running IPFire firewall using <em>get-hosts.sh</em>.</p>
   </blockquote>
-  <p><strong>config/dnsservers.yml</strong></p>
+  <p><strong>config/dnsaddservers.yml</strong></p>
   <blockquote>
   <p>Contains the IP addresses of DNS servers to include in builds when <em>include_dnsaddservers: true</em>.</p>
   </blockquote>
@@ -488,6 +612,15 @@
   <p><em>ovpn_roadwarrior:</em></p>
   <blockquote>
   <p>A list which configures the name of the OpenVPN Road Warrior connection. The connection name is created automatically during the build.</p>
+  </blockquote>
+  <p><strong>config/pakfire.yml</strong></p>
+  <p><em>pakfire_addons:</em></p>
+  <blockquote>
+  <p>A list of the <em>meta</em> names of add-on packages to install to the firewall on first boot.</p>
+  </blockquote>
+  <p><strong>config/vpnactivenodes.yml</strong></p>
+  <blockquote>
+  <p>Contains a list of nodes for active Ipsec VPN tunnels when <em>include_vpn: true</em>.</p>
   </blockquote>
   <p><strong>secrets/ddns-secret.yml</strong></p>
   <p><em>ddns_provider:</em></p>
@@ -546,13 +679,19 @@
   <blockquote>
   <p>Contains the per node OpenVPN certificates and configuration information created by FireMyPi when run with <em>include_ovpn: true</em> the first time for a node. If you delete any of the node subdirectories in <em>secrets/ovpn</em> the certificates and configuration information will be recreated the next time you build the node with <em>include_ovpn: true</em>. In this case, you will need to load the new road warrior certificate onto your mobile device(s).</p>
   </blockquote>
+  <h2 id="overiding-global-configuration-variables">Overiding Global Configuration Variables</h2>
+  <p>During a build, FireMyPi loads the <em>config/system_vars.yml</em> file first followed by the <em>config/nodeN.vars.yml</em> file for the node being built. This allows you to override the global configuration variables in <em>config/system_vars.yml</em> by setting the corresponding global variable in the <em>config/nodeN_vars.yml</em> file.</p>
+  <p>For example, if one of your nodes has the firewall at host number ‘1’ instead of the default ‘254’ configured in <em>config/system_vars.yml</em>, copy the <em>green_host: 254</em> line from <em>config/system_vars.yml</em> to the appropriate <em>config/nodeN_vars.yml</em> file and edit the line to <em>green_host: 1</em>.</p>
+  <p>Note that the feature related configuration files in <em>config</em> (dnsaddservers.yml, ipblocklist.yml, locationblock.yml, openvpn.yml, pakfire.yml and vpnactivenodes.yml) cannot be overridden on a node by node basis.</p>
   <hr />
-  <h1 id="migrating-from-ipfire-to-firemypi">Migrating from IPFire to FireMyPi</h1>
-  <p>If you’re already running an IPFire firewall and want to migrate to FireMyPi, you can use <em>get-fixleases.sh</em> and <em>get-fwrules.sh</em> to copy your existing DHCP fixed leases and firewall rules into the FireMyPi build environment.</p>
-  <p>When run with the ‘–ip’ argument, both of the scripts will attempt to contact and download the fixleases or firewall rules from the target firewall to the <em>config</em> directory files for the node specified. The node configuration file does not need to exist for this and can be created later to build the node.</p>
-  <p>See <a href="fmp-admin-guide.html#migrating-from-ipfire-to-firemypi">FireMyPiCommands</a> for instructions on running <em>get-fixleases.sh</em> and <em>get-fwrules.sh</em>.</p>
+  <h1 id="migrating-to-firemypi">Migrating To FireMyPi</h1>
+  <p>If you’re already running a home firewall, FireMyPi may be a good fit for you. For non-IPFire firewalls, we don’t really have a migration path for you other than going through the FireMyPi configuration and build process.</p>
+  <p>However, if you’re running an IPFire firewall and want to migrate to FireMyPi, you can use <em>get-fixleases.sh</em>, <em>get-fwrules.sh</em> and <em>get-hosts.sh</em> to copy your existing DHCP fixed leases, firewall rules and hostnames into the FireMyPi build environment.</p>
+  <p>When run with ‘–node &lt;N&gt; –ip &lt;IP&gt;’ arguments, the <em>get</em> scripts will attempt to contact the firewall at ‘&lt;IP&gt;’ and download the fixleases, firewall rules or hostnames from a source IPFire firewall to the <em>config</em> directory files (nodeN.fixleases, nodeN.fwrules and/or nodeN.hosts) for the node specified. The node configuration file (nodeN_vars.yml) does not need to exist for this and can be created later before building the node.</p>
+  <p>FireMyPi configuration information other than fixleases, fwrules and hosts would need to be created in the build environment by running the <em>mk</em> scripts or by editing the appropriate configuration files manually. IPFire configurations not supported by FireMyPi would need to be recreated with the IPFire Web GUI.</p>
+  <p>Note that SSH must be enabled on the source firewall for the <em>get</em> scripts to work.</p>
   <hr />
-  <h1 id="firemypi-commands">FireMyPi Commands</h1>
+  <h1 id="commands">Commands</h1>
   <ul>
   <li><a href="#accept-license.sh">accept-license.sh</a></li>
   <li><a href="#build-firemypi.sh">build-firemypi.sh</a></li>
@@ -560,6 +699,7 @@
   <li><a href="#firemypi-walkthrough.sh">firemypi-walkthrough.sh</a></li>
   <li><a href="#get-fixleases.sh">get-fixleases.sh</a></li>
   <li><a href="#get-fwrules.sh">get-fwrules.sh</a></li>
+  <li><a href="#get-hosts.sh">get-hosts.sh</a></li>
   <li><a href="#get-image-from-Downloads.sh">get-image-from-Downloads.sh</a></li>
   <li><a href="#mk-ddns-secret.sh">mk-ddns-secret.sh</a></li>
   <li><a href="#mk-node-config.sh">mk-node-config.sh</a></li>
@@ -576,15 +716,15 @@
   <p>Displays the license for FireMyPi and prompts for license acceptance. The script is called from <em>build-firemypi.sh</em> if the license has not been accepted and may also be run standalone.</p>
   <p>This script takes no arguments.</p>
   <h2 id="build-firemypi.sh">build-firemypi.sh</h2>
-  <p>Performs the build of FireMyPi/IPFire configurations and images. The script checks for required packages, configuration files and arguments and will exit if conditions are not met. The script runs <em>ansible-playbook</em> to build the configuration first and then if <em>–image</em> is specified will build the image. Build products are stored in the <em>deploy</em> directory along with a file that contains the parameters used for the build.</p>
+  <p>Performs the build of FireMyPi/IPFire configs and images. The script checks for required packages, configuration files and arguments and will exit if conditions are not met. The script runs <em>ansible-playbook</em> to build the config first and then if <em>–image</em> is specified will build the image. Build products are stored in the <em>deploy</em> directory along with a file that contains the parameters used for the build.</p>
   <p>Root access is required to create a loop device and mount the image file if <em>–image</em> is specified and your sudo password will be prompted for during the build.</p>
   <p>During the image build, if root access is not granted, for example if the sudo password is entered incorrectly, the image build will stop at the “Verify become root” task.</p>
   <blockquote>
   <p>TASK [Verify become root - this task will fail if become root fails]</p>
   </blockquote>
-  <p>If this happens, you can restart the build so that you can enter the correct password.</p>
+  <p>If this happens, restart the build and enter the correct password.</p>
   <h3 id="required-parameters">Required Parameters:</h3>
-  <p><strong>–node|-n {N}</strong></p>
+  <p><strong>–node|-n &lt;N&gt;</strong></p>
   <blockquote>
   <p>The node number of the node to build.</p>
   </blockquote>
@@ -593,7 +733,7 @@
   <p>Build a test or production config/image.</p>
   </blockquote>
   <h3 id="optional-parameters">Optional Parameters:</h3>
-  <p><strong>–show [–node|-n {N}]</strong></p>
+  <p><strong>–show [–node|-n &lt;N&gt;]</strong></p>
   <blockquote>
   <p>Calls <em>show-build-environment-sh</em> to show either the global build environment status or the status of the specified node.</p>
   </blockquote>
@@ -612,7 +752,7 @@
   <h2 id="clean.sh">clean.sh</h2>
   <p>Cleans the build environment to remove build products, the core image or secrets from the environment. Use care if you intend to run <em>clean.sh</em> with the <em>–ALL</em> or <em>–SECRETS</em> parameters.</p>
   <p>If a build <em>–image</em> has been interrupted and there are leftover mounts for a node, <em>clean.sh</em> will display a warning that the node could not be completely cleaned. The mounts will be cleaned up the next time an image build for the node is completed successfully.</p>
-  <p><strong>–node|-n {N}</strong></p>
+  <p><strong>–node|-n &lt;N&gt;</strong></p>
   <blockquote>
   <p>Delete node N from the <em>deploy</em> directory effectively removing all build products for the node.</p>
   </blockquote>
@@ -636,30 +776,46 @@
   <p>Performs a walkthrough of the FireMyPi build process and creates a test node. The script is intended to be a tutorial but can also be used to prepare the build environment to build a production node.</p>
   <p>This script takes no arguments.</p>
   <h2 id="get-fixleases.sh">get-fixleases.sh</h2>
-  <p>Get the DCHP fixed leases that have been added to a running IPFire firewall with the Web GUI. If you have a running IPFire firewall where you have entered fixed leases with the Web GUI, the script will copy those those fixed lease definitions into the build environment so that they will be included in future builds.</p>
-  <p>If your IPFire firewall was not built as a FireMyPi node, you can still get fixleases from the firewall by specifying the node as the node that you want to copy the fixleases to and the IP address of the firewall.</p>
+  <p>Get the DCHP fixed leases that have been added to a running IPFire firewall with the IPFire Web GUI. If you have a running IPFire firewall where you have entered fixed leases with the IPFire Web GUI, the script will copy those fixed lease definitions into the build environment so that they can be included in future builds.</p>
+  <p>If your IPFire firewall was not built as a FireMyPi node, you can still get fixleases from the firewall by specifying the node as the node configuration that you want to copy the fixleases to and the IP address of the firewall.</p>
+  <p>Note that SSH must be enabled on the source firewall for <em>get-fixleases.sh</em> to work.</p>
   <h3 id="required-parameters-1">Required Parameters:</h3>
-  <p><strong>–node|-n {N}</strong></p>
+  <p><strong>–node|-n &lt;N&gt;</strong></p>
   <blockquote>
   <p>The node to get the fixleases file from and/or copy to.</p>
   </blockquote>
   <h3 id="optional-parameters-1">Optional Parameters:</h3>
-  <p><strong>–ip {IP}</strong></p>
+  <p><strong>–ip &lt;IP&gt;</strong></p>
   <blockquote>
   <p>The IP address to get the fixleases file from.</p>
   </blockquote>
   <h2 id="get-fwrules.sh">get-fwrules.sh</h2>
-  <p>Get firewall rules that have been added to a running IPFire firewall with the Web GUI. If you have a running IPFire firewall where you have created firewall rules with the Web GUI, the script will copy those those firewall rules into the build environment so that they will be included in future builds.</p>
-  <p>If your IPFire firewall was not built as a FireMyPi node, you can still get firewall rules from the firewall by specifying the node as the node that you want to copy the firewall rules to and the IP address of the firewall.</p>
+  <p>Get firewall rules that have been added to a running IPFire firewall with the IPFire Web GUI. If you have a running IPFire firewall where you have created firewall rules with the IPFire Web GUI, the script will copy those firewall rules into the build environment so that they can be included in future builds.</p>
+  <p>If your IPFire firewall was not built as a FireMyPi node, you can still get firewall rules from the firewall by specifying the node as the node configuration that you want to copy the firewall rules to and the IP address of the firewall.</p>
+  <p>Note that SSH must be enabled on the source firewall for <em>get-fwrules.sh</em> to work.</p>
   <h3 id="required-parameters-2">Required Parameters:</h3>
-  <p><strong>–node|-n {N}</strong></p>
+  <p><strong>–node|-n &lt;N&gt;</strong></p>
   <blockquote>
   <p>The node to get the firewall rules file from and/or copy to.</p>
   </blockquote>
   <h3 id="optional-parameters-2">Optional Parameters:</h3>
-  <p><strong>–ip {IP}</strong></p>
+  <p><strong>–ip &lt;IP&gt;</strong></p>
   <blockquote>
   <p>The IP address to get the firewall rules from.</p>
+  </blockquote>
+  <h2 id="get-hosts.sh">get-hosts.sh</h2>
+  <p>Get the DNS hostnames that have been added to a running IPFire firewall with the IPFire Web GUI. If you have a running IPFire firewall where you have entered hostnames with the IPFire Web GUI, the script will copy those hostname definitions into the build environment so that they can be included in future builds.</p>
+  <p>If your IPFire firewall was not built as a FireMyPi node, you can still get hostnames from the firewall by specifying the node as the node configuration that you want to copy the hostnames to and the IP address of the firewall.</p>
+  <p>Note that SSH must be enabled on the source firewall for <em>get-hosts.sh</em> to work.</p>
+  <h3 id="required-parameters-3">Required Parameters:</h3>
+  <p><strong>–node|-n &lt;N&gt;</strong></p>
+  <blockquote>
+  <p>The node to get the hostnames file from and/or copy to.</p>
+  </blockquote>
+  <h3 id="optional-parameters-3">Optional Parameters:</h3>
+  <p><strong>–ip &lt;IP&gt;</strong></p>
+  <blockquote>
+  <p>The IP address to get the hostnames file from.</p>
   </blockquote>
   <h2 id="get-image-from-downloads.sh">get-image-from-Downloads.sh</h2>
   <p>Get a core image that you have downloaded and move it into the FireMyPi build environment. By default, look in <em>~/Downloads</em>. If IPFire Flash Image(s) are not found there, prompt for the directory to search.</p>
@@ -673,8 +829,9 @@
   <h2 id="mk-node-config.sh">mk-node-config.sh</h2>
   <p>Create a new node configuration file in the <em>config</em> directory for the specified node. If run without arguments, you will be prompted for the node number.</p>
   <p>Your system time zone will also be displayed and you will be given the option to change it if you are building a node for a different time zone.</p>
-  <h3 id="optional-parameters-3">Optional Parameters:</h3>
-  <p><strong>–node|-n {N}</strong></p>
+  <p>If a <em>config/nodeN_vars.yml</em> file already exists for <em>nodeN</em>, the script will prompt for permission to overwite the existing file. If the file is overwritten, a backup copy with a <em>saveDATETIME</em> extention is created.</p>
+  <h3 id="optional-parameters-4">Optional Parameters:</h3>
+  <p><strong>–node|-n &lt;N&gt;</strong></p>
   <blockquote>
   <p>Create a node configuration file for node N.</p>
   </blockquote>
@@ -682,13 +839,13 @@
   <p>Create the <em>secrets/ovpn-p12-secret.yml</em> file which contains a clear text password that will be used when creating OpenVPN certificate files for the Admin Road Warrior. This password is needed in order to install the certificate on a device that will connect from the internet to the home network. The OpenVPN p12 certificate file is created by reading a user input from the script.</p>
   <p>If a <em>secrets/ovpn-p12-secret.yml</em> file already exists, the script will prompt for permission to overwite the existing file. If the file is overwritten, a backup copy with a <em>saveDATETIME</em> extention is created.</p>
   <p>This script takes no arguments.</p>
-  <h2 id="mk-vpnpsk-secret.sh">mk-vpnpsk-secret.sh</h2>
-  <p>Create the <em>secrets/vpnpsk-secret.yml</em> file which contains a 64 character pre-shared key that will be used for Ipsec VPN tunnels for all nodes build by FireMyPi. The pre-shared key is created with <em>pwgen</em> using the <em>pwgen -s 64 1</em> command.</p>
-  <p>If a <em>secrets/vpnpsk-secret.yml</em> file already exists, the script will prompt for permission to overwite the existing file. If the file is overwritten, a backup copy with a ‘saveDATETIME’ extention is created.</p>
-  <p>This script takes no arguments.</p>
   <h2 id="mk-root-secret.sh">mk-root-secret.sh</h2>
   <p>Create the <em>secrets/root-secret.yml</em> file which contains the password hash for the root password that will be used for all nodes build by FireMyPi. The hash is created with OpenSSL using the <em>openssl passwd -6</em> command.</p>
   <p>If a <em>secrets/root-secret.yml</em> file already exists, the script will prompt for permission to overwite the existing file. If the file is overwritten, a backup copy with a <em>saveDATETIME</em> extention is created.</p>
+  <p>This script takes no arguments.</p>
+  <h2 id="mk-vpnpsk-secret.sh">mk-vpnpsk-secret.sh</h2>
+  <p>Create the <em>secrets/vpnpsk-secret.yml</em> file which contains a 64 character pre-shared key that will be used for Ipsec VPN tunnels for all nodes build by FireMyPi. The pre-shared key is created with <em>pwgen</em> using the <em>pwgen -s 64 1</em> command.</p>
+  <p>If a <em>secrets/vpnpsk-secret.yml</em> file already exists, the script will prompt for permission to overwite the existing file. If the file is overwritten, a backup copy with a ‘saveDATETIME’ extention is created.</p>
   <p>This script takes no arguments.</p>
   <h2 id="mk-webadmin-secret.sh">mk-webadmin-secret.sh</h2>
   <p>Create the <em>secrets/webadmin-secret.yml</em> file which contains the password hash for the IPFire Web GUI <em>admin</em> user that will be used for all nodes build by FireMyPi. The hash is created with the Apache2 <em>htpasswd</em> tool using the <em>httpasswd -B -n admin</em> command.</p>
@@ -697,8 +854,8 @@
   <h2 id="mk-wireless-secret.sh">mk-wireless-secret.sh</h2>
   <p>Create a <em>secrets/nodeN_wireless-secret.yml</em> file which contains the SSID and WPA2 passphrase for the wireless network that the firewall will connect to on the red0 interface if <em>wireless_red0: true</em> in the node configuration file.</p>
   <p>If a <em>secrets/nodeN_wireless-secret.yml</em> file already exists, the script will prompt for permission to overwite the existing file. If the file is overwritten, a backup copy with a <em>saveDATETIME</em> extention is created.</p>
-  <h3 id="optional-parameters-4">Optional Parameters:</h3>
-  <p><strong>–node|-n {N}</strong></p>
+  <h3 id="optional-parameters-5">Optional Parameters:</h3>
+  <p><strong>–node|-n &lt;N&gt;</strong></p>
   <blockquote>
   <p>Create a wireless configuration file for node N.</p>
   </blockquote>
@@ -717,8 +874,9 @@
   <h2 id="show-build-environment.sh">show-build-environment.sh</h2>
   <p>This script shows a dashboard of either the global status of the build environment or the status of a specific node. It is very helpful for you to determine if anything is missing from your build environment and the status of any nodes that you have built or intend to build.</p>
   <p>If a node has leftover mounts from a build <em>–image</em> that failed or was interrupted, <em>show-build-environment.sh</em> will show the affected node in red on the global status dashboard and will show a warning for leftover mounts on the node status dashboard. Leftover mounts will be cleaned up automatically when a successful build is run for the affected node.</p>
-  <h3 id="optional-parameters-5">Optional Parameters:</h3>
-  <p><strong>–node|-n {N}</strong></p>
+  <p>If run without any parameters, the script will show the status of the global build environment.</p>
+  <h3 id="optional-parameters-6">Optional Parameters:</h3>
+  <p><strong>–node|-n &lt;N&gt;</strong></p>
   <blockquote>
   <p>Show the build status of the specified node.</p>
   </blockquote>
@@ -730,24 +888,24 @@
   <p>This script provides instructions an how to write your FireMyPi/IPFire image to a micro sd card.</p>
   <p>This script takes no arguments.</p>
   <hr />
-  <h1 id="firemypi-secrets-files">FireMyPi Secrets Files</h1>
-  <p>FireMyPi stores confidential information needed for the firewall builds in a seperate ‘secrets’ directory. Edit and rename the provided template files to configure secrets or use the “mk”scripts in the build directory.</p>
+  <h1 id="secrets">Secrets</h1>
+  <p>FireMyPi stores confidential information needed for the firewall builds in a separate <em>secrets</em> directory. Edit and rename the provided template files to configure secrets or use the <em>mk</em> scripts in the build directory.</p>
   <h2 id="ddns-secret.yml">ddns-secret.yml</h2>
-  <p>The ddns-secret.yml file contains the authentication credentials for Dynamic DNS updates.</p>
+  <p>The <em>ddns-secret.yml</em> file contains the authentication credentials for Dynamic DNS updates.</p>
   <h2 id="noden_wireless-secret.yml">nodeN_wireless-secret.yml</h2>
-  <p>The nodeN_wireless-secret.yml file contains the SSID and the WPA2 passphrase of the wireless network for red0 to connect to if <em>wireless_red0: true</em> in the ‘config/NodeN_vars.yml’ file.</p>
+  <p>The <em>nodeN_wireless-secret.yml</em> file contains the SSID and the WPA2 passphrase of the wireless network for red0 to connect to if <em>wireless_red0: true</em> in the <em>config/nodeN_vars.yml</em> file.</p>
   <h2 id="ovpn-pkcs12-secret.yml">ovpn-pkcs12-secret.yml</h2>
-  <p>The ovpn-pkcs12-secret.yml file contains the password that will be used when creating pkcs12 (.p12) key files for the OpenVPN Road Warrior.</p>
+  <p>The <em>ovpn-pkcs12-secret.yml</em> file contains the password that will be used when creating pkcs12 (.p12) key files for the OpenVPN Road Warrior.</p>
   <h2 id="vpnpsk-secret.yml">vpnpsk-secret.yml</h2>
-  <p>The vpnpsk-secret.yml file contains the pre-shared key for Ipsec VPN tunnels.</p>
+  <p>The <em>vpnpsk-secret.yml</em> file contains the pre-shared key for Ipsec VPN tunnels.</p>
   <h2 id="root-secret.yml">root-secret.yml</h2>
-  <p>The root-secret.yml file contains the hashed password for root.</p>
+  <p>The <em>root-secret.yml</em> file contains the hashed password for root.</p>
   <h2 id="webadmin-secret.yml">webadmin-secret.yml</h2>
-  <p>The webadmin-secret.yml file contains the hashed password for the IPFire Web GUI admin.</p>
+  <p>The <em>webadmin-secret.yml</em> file contains the hashed password for the IPFire Web GUI admin.</p>
   <h2 id="hmac-md5-key-files">HMAC-MD5 key files</h2>
   <p>If the keypair authentication method is used for Dynamic DNS, place the HMAC-MD5 “K{{domain}}.+157+{{ddns_keyid}}.(key|private)” files in the secrets directory.</p>
   <h2 id="ovpn-directory">ovpn directory</h2>
-  <p>The secrets/ovpn directory contains the OpenVPN configuration information for nodes including the CA, Host and Road Warrior certificates. It is created automatically at build time when include_ovpn is set to true.</p>
+  <p>The <em>secrets/ovpn</em> directory contains the OpenVPN configuration information for nodes including the CA, Host and Road Warrior certificates. It is created automatically at build time when <em>include_ovpn</em> is set to true.</p>
   <hr />
   <h1 id="feature-configuration">Feature Configuration</h1>
   <p>The sections that follow provide information on how to configure specific features in FireMyPi.</p>
@@ -782,7 +940,10 @@
   <blockquote>
   <p>Set <em>ddns_auth_method:</em> to the authentication method used by your Dynamic DNS provider.</p>
   </blockquote>
-  <p><strong>In secrets/ddns.secrets.yml:</strong></p>
+  <p><strong>In secrets/ddns.secret.yml:</strong></p>
+  <blockquote>
+  <p>Run ‘mk-ddns-secret.sh’ to prompt for the necessary information and create the <em>ddns.secret.yml</em> file automatically or configure the file manually from the <em>ddns.secret.yml.template</em> as follows:</p>
+  </blockquote>
   <blockquote>
   <p>Set <em>ddns_provider:</em> to the name of your Dynamic DNS provider. This must be one of the Dynamic DNS providers listed in “Services/Dynamic DNS” in the IPFire Web GUI. For example: ddns_provider: dyndns.org.</p>
   </blockquote>
@@ -807,12 +968,12 @@
   </blockquote>
   <blockquote>
   <blockquote>
-  <p>Set <em>ddns_keyid:</em> to the key identifier part of your HMAC-MD5 keyfiles. This will be the last number in the filename before the <em>.key</em> or <em>.private</em> file extension and is taken directly from the key file name.</p>
+  <p>Set <em>ddns_keyid:</em> to the key identifier part of your HMAC-MD5 keyfiles. This will be the last number in the filename before the <em>.key</em> or <em>.private</em> file extension and is taken directly from the key filename.</p>
   </blockquote>
   </blockquote>
   <blockquote>
   <blockquote>
-  <p>Copy your HMAC-MD5 key files to the <strong>secrets</strong> directory:</p>
+  <p>Copy your HMAC-MD5 key files to the <em>secrets</em> directory:</p>
   </blockquote>
   </blockquote>
   <blockquote>
@@ -830,51 +991,119 @@
   </blockquote>
   </blockquote>
   <hr />
-  <h2 id="include_dhcp">include_dhcp</h2>
-  <p>FireMyPi allows you to configure and start the DHCP server for the green0 network. This is a default feature in FireMyPi. Make sure that you do not have any other DHCP servers running on your home network when this feature is enabled.</p>
+  <h2 id="include_dhcp_fixleases">include_dhcp_fixleases</h2>
+  <p>FireMyPi allows you to add fixed leases to the DHCP server. Using fixed leases is a good practice for organizing your network.</p>
   <p>See <a href="https://www.ipfire.org/docs/configuration/network/dhcp">https://www.ipfire.org/docs/configuration/network/dhcp</a> for more information about this IPFire feature.</p>
-  <h3 id="configuring-dhcp">Configuring DHCP</h3>
+  <h3 id="configuring-dhcp-fixed-leases">Configuring DHCP Fixed Leases</h3>
   <p><strong>In config/system_vars.yml:</strong></p>
   <blockquote>
-  <p>Set <em>include_dhcp: true</em>.</p>
-  </blockquote>
-  <blockquote>
-  <p>If so desired you can set <em>dhcp_range_start:</em> and <em>dhcp_range_end:</em> to change the range for the DCHP server.</p>
-  </blockquote>
-  <blockquote>
-  <p>You can also set <em>green_dnsserver:</em> to change the DNS server that will be given to hosts by DHCP. Only do this if you have a separate DNS server that you use on your home network.</p>
+  <p>Set <em>include_dhcp_fixleases: true</em>.</p>
   </blockquote>
   <p><strong>In config/nodeN_vars.yml:</strong></p>
   <blockquote>
-  <p>You can add static leases to the <em>dhcp_static:</em> list and enable the static leases by setting <em>dhcp_static_enabled:</em> to <em>true</em>. When adding hosts to <em>dhcp_static:</em> follow the example format in the node configuration file.</p>
+  <p>Set <em>fixleases_mode:</em> to the desired mode of operation. The <em>fixlease_mode:</em> tells FireMyPi where to get the information for DHCP fixed leases when creating the DHCP server configuration.</p>
   </blockquote>
-  <h3 id="additional-notes">Additional Notes</h3>
-  <p>By default, <em>include_dhcp:</em> sets the DNS server provided to DHCP clients to the address of the firewall node. If you have a separate internal DNS server, this can be changed in <em>config/system_vars.yml</em> by setting <em>green_dnsserver:</em> to the host IP number of the internal DNS server.</p>
-  <p>IPFire stores fixed leases in the <em>/var/ipfire/dhcp/fixleases</em> file. You can download your current fixed leases from a running IPFire firewall using the <em>get-fixleases.sh</em> script. The script will copy your current fixleases file to the <em>config</em> directory for use with future builds.</p>
-  <p>If static leases are enabled in <em>config/nodeN_vars.yml</em> and the fixleases file is also present. FireMyPi will combine the two when creating the DHCP server configuration.</p>
+  <p>The options are:</p>
+  <blockquote>
+  <blockquote>
+  <p><em>off</em> - Turns off DHCP fixed leases for the node. No fixed leases will be added to the DHCP configuration.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>fixleases_var</em> - Reads fixed leases from the <em>fixleases:</em> variable in the <em>config/nodeN_vars.yml</em> file and adds them to the DHCP configuration.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>fixleases_file</em> - Reads fixed leases from the <em>config/nodeN.fixleases</em> file and adds them to the DHCP configuration.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>combined</em> - Reads fixed leases from both the <em>fixleases:</em> variable and the <em>config/nodeN.fixleases</em> file. The records are then combined, deduplicated and added to the DHCP configuration.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <p>If you select the <em>fixleases_var</em> or <em>combined</em> modes, add your fixed leases to the <em>fixleases:</em> variable in ‘config/nodeN_vars.yml’ following the format of the sample entries.</p>
+  </blockquote>
+  <p><strong>For config/nodeN.fixleases:</strong></p>
+  <blockquote>
+  <p>Use <em>get-fixleases.sh</em> to get a list of fixed dhcp leases that you have entered in the IPFire Web GUI and store them in the <em>config</em> directory.</p>
+  </blockquote>
+  <hr />
+  <h2 id="include_dhcp_server">include_dhcp_server</h2>
+  <p>FireMyPi allows you to configure and start the DHCP server for the green0 network. This is a default feature in FireMyPi. Make sure that you do not have any other DHCP servers running on your home network when this feature is enabled.</p>
+  <p>See <a href="https://www.ipfire.org/docs/configuration/network/dhcp">https://www.ipfire.org/docs/configuration/network/dhcp</a> for more information about this IPFire feature.</p>
+  <h3 id="configuring-dhcp-server">Configuring DHCP Server</h3>
+  <p><strong>In config/system_vars.yml:</strong></p>
+  <blockquote>
+  <p>Set <em>include_dhcp_server: true</em>.</p>
+  </blockquote>
+  <blockquote>
+  <p>Set <em>dhcp_range_start:</em> and <em>dhcp_range_end:</em> to the desired address range for the DCHP server.</p>
+  </blockquote>
+  <blockquote>
+  <p>Set <em>green_dnsserver:</em> to the host number of the DNS server that will be given to hosts by DHCP. Normally, this will be the same as <em>green_host:</em>. However, if you have a separate DNS server that you use on your home network, you can set that host number here.</p>
+  </blockquote>
   <hr />
   <h2 id="include_dnsaddservers">include_dnsaddservers</h2>
-  <p>You can add additional DNS servers to your FireMyPi firewall by using the <em>include_dnsaddservers</em> feature. This feature allows you to add DNS servers in addition to your ISP DNS servers.</p>
-  <p>This may be helpful if for some reason your ISP DNS servers don’t work with IPFire or if you are using a separate internal DNS server, such as Pi-Hole.</p>
+  <p>You can add additional DNS servers to your firewall by using the <em>include_dnsaddservers:</em> feature. This feature allows you to add DNS servers in addition to your ISP DNS servers.</p>
+  <p>This may be helpful if for some reason your ISP DNS servers don’t work with IPFire or if you are using a separate internal DNS server.</p>
+  <p>One thing to keep in mind with this feature is that the ISP DNS servers and any DNS servers that you add with <em>include_dnsaddservers:</em> are the DNS servers used <strong>by the firewall</strong>. The hosts on the internal network will use the DNS server given to them by DHCP as specified in <em>green_dnsserver:</em> or manually configured on the host. Usually this means that the internal hosts send DNS requests to the firewall and the firewall forwards the requests to the ISP DNS servers or DNS servers that you have added.</p>
   <p>See <a href="https://www.ipfire.org/docs/configuration/network/dns-server">https://www.ipfire.org/docs/configuration/network/dns-server</a> for more information about this IPFire feature.</p>
-  <h3 id="to-turn-on-the-include_dnsaddservers-feature">To turn on the include_dnsaddservers feature:</h3>
+  <h3 id="adding-dns-servers">Adding DNS Servers</h3>
   <p><strong>In config/system_vars.yml:</strong></p>
   <blockquote>
   <p>Set <em>include_dnsaddservers: true</em>.</p>
   </blockquote>
+  <p><strong>In config/dnsaddservers.yml:</strong></p>
   <blockquote>
-  <p>If you do not want to use your ISP DNS servers at all, set <em>use_isp_nameservers: “off”</em> to turn off your ISP domain name servers.</p>
-  </blockquote>
-  <p><strong>In config/dnsservers.yml:</strong></p>
-  <blockquote>
-  <p>Set <em>dnsserver1:</em> and <em>dnsserver2:</em> to the IP addresses of the DNS servers that you will use.</p>
+  <p>Option 1 is to set <em>dnsserver1:</em> and <em>dnsserver2:</em> to the IP addresses of the internet DNS servers that you will use.</p>
   </blockquote>
   <blockquote>
-  <p>If you have an internal DNS server, set <em>dnsserver1:</em> to the IP address of your internal DNS server and set <em>dnsserver2:</em> to <em>0.0.0.0</em> so that it will be ignored. In this case, you will also want to set <em>green_dnsserver:</em> to the host IP number of your internal DNS server so that DHCP clients will send DNS requests directly to your internal DNS server.</p>
+  <p>Option 2, if you have an internal DNS server, is to set <em>dnsserver1:</em> to the IP address of your internal DNS server and set <em>dnsserver2:</em> to <em>0.0.0.0</em> so that it will be ignored. Assuming that you’ve also set <em>include_dnssettings: true</em> and <em>dnssetting_isp_off: true</em>, this means that the firewall will send its DNS requests only to the internal DNS server. In this case, you will probably also want to set <em>green_dnsserver:</em> to the host IP number of your internal DNS server so that hosts that are DHCP clients will send DNS requests to your internal DNS server, ie. the firewall won’t have to forward the internal host requests to the internal DNS server.</p>
+  </blockquote>
+  <hr />
+  <h2 id="include_dnssettings">include_dnssettings</h2>
+  <p>FireMyPi allows you to customize the DNS settings as found in the <em>DNS Configuration</em> section of the <em>Network/Domain Name System</em> page of the IPFire Web GUI.</p>
+  <p>If you are in a multiple node environment where different nodes have different DNS requirements, the global variables in <em>config/system_vars.yml</em> may be overridden on a node by node basis in the <em>config/nodeN_vars.yml</em> files.</p>
+  <h3 id="configuring-dns">Configuring DNS</h3>
+  <p><strong>In config/system_vars.yml:</strong></p>
+  <blockquote>
+  <p>Set <em>include_dnssettings: true</em>.</p>
+  </blockquote>
+  <blockquote>
+  <p>Set the <em>dnssettings_</em> variables as required. The allowed options are shown below with the first option being the default setting.</p>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p>dnssettings_use_isp: { “on” | “off” }</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p>dnssettings_proto: { “UDP” | “TLS” | TCP }</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p>dnssettings_qname: { “standard” | “strict” }</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p>dnssettings_safe_search: { “off” | “on” }</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p>dnssettings_safe_search_youtube: { “on” | “off” }</p>
+  </blockquote>
   </blockquote>
   <hr />
   <h2 id="include_fireinfo">include_fireinfo</h2>
-  <p>FireMyPi allows you to turn on the Fireinfo service which sends information about your Raspberry Pi node to the IPFire development team.</p>
+  <p>FireMyPi allows you to turn on the Fireinfo service which sends information about your Raspberry Pi node(s) to the IPFire development team.</p>
   <p>We think that this is a good idea because no personally identifying information is included and it helps let the IPFire development team know how many Raspberry Pi’s are out there running IPFire.</p>
   <p>See <a href="https://www.ipfire.org/docs/fireinfo">https://www.ipfire.org/docs/fireinfo</a> for more information about this IPFire feature.</p>
   <h3 id="configuring-fireinfo">Configuring Fireinfo</h3>
@@ -885,11 +1114,11 @@
   <hr />
   <h2 id="include_fwrules">include_fwrules</h2>
   <p>FireMyPi allows you to copy existing firewall rules from a running IPFire firewall to the ‘config’ directory of the build environment so that they can be used in future builds.</p>
-  <p>Firewall rules can be copied from a running IPFire firewall using the ‘get-fwrules.sh’ script and specifying the target node that the rules will be copied to.</p>
+  <p>Firewall rules can be copied from a running IPFire firewall using the ‘get-fwrules.sh’ script.</p>
   <p>Note that FireMyPi does not give you the ability to write firewall rules, just copy existing rules that you have already written with the IPFire Web GUI to the build environment.</p>
   <p>See <a href="https://www.ipfire.org/docs/configuration/firewall/rules">https://www.ipfire.org/docs/configuration/firewall/rules</a> for more information about writing firewall rules using the IPFire Web GUI.</p>
   <h3 id="configuring-firewall-rules">Configuring Firewall Rules</h3>
-  <p><strong>In the config directory</strong></p>
+  <p><strong>For config/nodeN.fwrules</strong></p>
   <blockquote>
   <p>Use the <em>get-fwrules.sh</em> script to copy firewall rules from a running IPFire firewall to the <em>config</em> directory.</p>
   </blockquote>
@@ -898,8 +1127,51 @@
   <p>Set <em>include_fwrules: true</em>.</p>
   </blockquote>
   <hr />
+  <h2 id="include_hosts">include_hosts</h2>
+  <p>FireMyPi allows you to configure hostnames for the hosts on your network. This is useful if you want to access local hosts by name for convenience. The feature is enabled globally in <em>config/system_vars.yml</em> and configured on a node by node basis in the <em>config/nodeN_vars.yml</em> file(s).</p>
+  <p>See <a href="https://www.ipfire.org/docs/configuration/network/hosts">https://www.ipfire.org/docs/configuration/network/hosts</a> for more information about this IPFire feature.</p>
+  <h3 id="configuring-hosts">Configuring Hosts</h3>
+  <p><strong>In config/system_vars.yml:</strong></p>
+  <blockquote>
+  <p>Set <em>include_hosts: true</em>.</p>
+  </blockquote>
+  <p><strong>In config/nodeN_vars.yml:</strong></p>
+  <blockquote>
+  <p>Set <em>hosts_mode:</em> to the desired mode of operation. The <em>hosts_mode:</em> tells FireMyPi where to get the information for local DNS hostnames to write to the <em>hosts</em> file in the config.</p>
+  </blockquote>
+  <p>The options are:</p>
+  <blockquote>
+  <blockquote>
+  <p><em>off</em> - Turns off hostnames for the node. No <em>hosts</em> file is created for the config.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>hosts_var</em> - Reads hostnames from the <em>hosts:</em> variable in the <em>config/nodeN_vars.yml</em> file.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>hosts_file</em> - Reads hostnames from the <em>config/nodeN.hosts</em> file for the node to create the <em>hosts</em> file.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p><em>combined</em> - Reads hostnames from both the <em>hosts:</em> variable and the <em>config/nodeN.hosts</em> file. The records are then combined and deduplicated to create the <em>hosts</em> file.</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <p>If you select the <em>hosts_var</em> or <em>combined</em> modes, add your hostnames to the list in the <em>hosts:</em> variable following the format of the sample entries.</p>
+  </blockquote>
+  <p><strong>For config/nodeN.hosts</strong></p>
+  <blockquote>
+  <p>Use <em>get-hosts.sh</em> to get a list of hosts that you have entered with the IPFire Web GUI and store them in the <em>config</em> directory.</p>
+  </blockquote>
+  <h3 id="additional-notes">Additional Notes</h3>
+  <p>IPFire stores hostnames in the <em>/var/ipfire/main/hosts</em> file. You can download your current hostnames from a running IPFire firewall using the <em>get-hosts.sh</em> script. The script will copy a current hosts file to the <em>config</em> directory for use with future builds.</p>
+  <hr />
   <h2 id="include_httpd">include_httpd</h2>
-  <p>FireMyPi configures the Apache HTTPD daemon to listen only only on the green0 interface so that the IPFire Web GUI is only accessible from the internal network. This is a default feature in FireMyPi.</p>
+  <p>FireMyPi configures the Apache HTTPD daemon to listen only on the green0 interface so that the IPFire Web GUI is only accessible from the internal network. This is a default feature in FireMyPi.</p>
   <h3 id="configuring-httpd">Configuring HTTPD</h3>
   <p><strong>In config/system_vars.yml:</strong></p>
   <blockquote>
@@ -917,10 +1189,11 @@
   </blockquote>
   <p><strong>In config/ipblocklist.yml:</strong></p>
   <blockquote>
-  <p>Turn on each of the IP Address Blocklists that you want included in the build. See the list of blocklists on the Web GUI “Firewall/IP Address Blocklists” page for information about the individual lists.</p>
+  <p>Turn on each of the IP Address Blocklists that you want included in the build. See the list of blocklists on the IPFire Web GUI “Firewall/IP Address Blocklists” page for information about the individual lists.</p>
   </blockquote>
   <h3 id="additional-notes-1">Additional Notes</h3>
-  <p>When you boot for the first time after turning on IP Address Blocklists, expect to see a lot of <em>iptables</em> errors when the firewall is started. This is because the information for the blocklists has not yet been downloaded by IPFire. IPFire will update the blocklist information at regular intervals and after the first boot, you will not see these errors on subsequent reboots.</p>
+  <p>When using <em>include_ipblocklist:</em> with FireMyPi, it will take a while for the public IP Address Blocklists to be downloaded after the first boot. If you are monitoring the Raspberry Pi console during the boot, you will see a delay and error messages during the firewall start as IPFire attempts to load the blocklists that are not yet downloaded. When the boot is completed, FireMyPi will start a script to monitor for the blocklist downloads and reload the firewall when the downloads have completed. As a result, on a first boot, you will not start to see packets blocked in the IP Address Blocklist Logs for about 20 minutes.</p>
+  <p>The IP Address Blocklists examples enabled by default in <em>config/ipblocklist.yml</em> are just suggestions. The IPFire Web GUI <em>Firewall/IP Address Blocklists</em> page has links to the blocklist providers where you can get information about the individual blocklists.</p>
   <hr />
   <h2 id="include_locationblock">include_locationblock</h2>
   <p>FireMyPi allows you to include the IPFire Location Block feature in your firewall build.</p>
@@ -979,6 +1252,20 @@
   <p>The certificates that FireMyPi uses for OpenVPN are created the first time that a node is built with this feature turned on and are stored in <em>secrets/ovpn/nodeN</em>. These same certificates will be used for subsequent builds of the same node. The reason for this is so that the Road Warrior certificate that you install on your mobile device will not change and you will not have to reinstall the Road Warrior certificate every time you rebuild FireMyPi.</p>
   <p>Once this feature is configured and activated, you can download the Road Warrior certificate to your mobile device using the IPFire Web GUI or transfer it with a usb stick. Use the p12 secret that you created to unlock the certificate file to import it.</p>
   <hr />
+  <h2 id="include_pakfire">include_pakfire</h2>
+  <p>FireMyPi allows you to install IPFire add-on packages the first time that you boot your firewall image. When <em>include_pakfire: true</em>, FireMyPi will add a script to the end of <em>rc.local</em> to install the add-on packages specified in <em>config/pakfire.yml</em>.</p>
+  <p>This is a global feature that affects all nodes.</p>
+  <p>See <a href="https://www.ipfire.org/docs/configuration/network/hosts">https://www.ipfire.org/docs/configuration/ipfire/pakfire</a> for more information about this IPFire feature.</p>
+  <h3 id="configuring-pakfire-add-on-packages">Configuring Pakfire Add-on Packages</h3>
+  <p><strong>In config/system_vars.yml:</strong></p>
+  <blockquote>
+  <p>Set <em>include_pakfire: true</em>.</p>
+  </blockquote>
+  <p><strong>In config/pakfire.yml:</strong></p>
+  <blockquote>
+  <p>Under <em>pakfire_addons:</em>, list the <em>meta</em> names of the add-on packages that you want pakfire to install. The <em>meta</em> name is the package name without the version information. For example, for the <em>7zip-17.05-10</em> add-on package listed on <em>IPFire/Pakfire</em>, the <em>meta</em> name is <em>7zip</em>.</p>
+  </blockquote>
+  <hr />
   <h2 id="include_ssh">include_ssh</h2>
   <p>FireMyPi configures and activates SSH to listen only on the <em>green0</em> interface so that the firewall is only accessible via SSH from the internal network. FireMyPi also turns on password authentication for SSH. This is a default feature in FireMyPi.</p>
   <p>See <a href="https://www.ipfire.org/docs/configuration/system/ssh">https://www.ipfire.org/docs/configuration/system/ssh</a> for more information about this IPFire feature.</p>
@@ -991,20 +1278,28 @@
   <h2 id="include_vpn">include_vpn</h2>
   <p>If you are implementing a multiple node network of firewalls, you can connect them with FireMyPi using Ipsec.</p>
   <p>FireMyPi implements VPN tunnels using Ipsec with a pre-shared key. The pre-shared key is a 64 character key generated using <em>pwgen</em>. The key is stored in the <em>secrets</em> directory and used by FireMyPi to build the VPN configuration.</p>
-  <p>FireMyPi will create VPN tunnels for all nodes specified in <em>config/active_vpn_nodes.yml</em>. This creates a mesh network of VPN tunnels between all active nodes.</p>
+  <p>FireMyPi will create VPN tunnels for all nodes specified in <em>config/vpnactivenodes.yml</em>. This creates a mesh network of VPN tunnels between all active nodes.</p>
+  <p>Note that FireMyPi does not configure Ipsec VPN tunnels to networks other than your FireMyPi managed networks. If necessary, tunnels to non-FireMyPi managed networks can be configured with the IPFire Web GUI.</p>
   <p>See <a href="https://www.ipfire.org/docs/configuration/services/ipsec">https://www.ipfire.org/docs/configuration/services/ipsec</a> for more information about this IPFire feature.</p>
-  <h3 id="to-use-ipsec-vpn-tunnels">To use Ipsec VPN Tunnels</h3>
+  <h3 id="configuring-ipsec-vpn-tunnels">Configuring Ipsec VPN Tunnels</h3>
   <p>Run the <em>mk-vpnpsk-secret.sh</em> script to generate a random pre-shared key that will be used to authenticate the VPN tunnels.</p>
   <p><strong>In config/system_vars.yml:</strong></p>
   <blockquote>
   <p>Set <em>include_vpn: true</em></p>
   </blockquote>
-  <p><strong>In config/active_vpn_nodes.yml:</strong></p>
+  <p><strong>In config/vpnactivenodes.yml:</strong></p>
   <blockquote>
   <p>List the node numbers, two at a minimum, to be configured and activated.</p>
   </blockquote>
   <hr />
-  <h1 id="firemypi-firewall-advice">FireMyPi Firewall Advice</h1>
+  <h1 id="firewall-management">Firewall Management</h1>
+  <h2 id="backups">Backups</h2>
+  <p>We recommend that after you build your firewall with FireMyPi you create two copies of micro sd cards with your image. That way you have a primary and backup micro sd card for your firewall. Run on the primary micro sd card and keep the backup micro sd card close by - maybe tape it to the side of your Raspberry Pi so it doesn’t get lost.</p>
+  <p>Backup the firewall with the IPFire Web GUI <em>System/Backup</em> and download the backups regularly, or at least when you make changes. You do not need to use the <em>Generate ISO</em> option of <em>System/Backup</em>.</p>
+  <p>Keep your backups secure and transfer them securely if transferring them is necessary. They do contain passwords and other confidential information.</p>
+  <p>If you have a micro sd card failure, boot your backup micro sd card (remember, the one you taped to the side of your Raspberry Pi…) and use the restore option of <em>System/Backup</em> to restore your backup to the firewall.</p>
+  <p>Do NOT do a clean install of an IPFire core image to restore your backup on top of. If you do, you will lose customizations to the boot and root partitions that FireMyPi installs and are not included in the standard IPFire backups.</p>
+  <p>Since FireMyPi gives you a reviewable and reproducible configuration for your filewall, you can always make a new micro sd card from the image you built or build a new image if needed.</p>
   <h2 id="organize-your-home-network">Organize Your Home Network</h2>
   <p>FireMyPi/IPFire provides a DHCP server to assign IP addresses to your network devices. Take this one step further and assign fixed leases to the devices on your network using the IPFire Web GUI. This is important because it will allow you to know what devices are recognized on your network. If a dynamic lease that you’re not expecting shows up, that could be a warning sign of an intrusion.</p>
   <p>We use the following numbering plan for our networks:</p>
@@ -1019,39 +1314,38 @@
   <h3 id="save-your-changes">Save Your Changes</h3>
   <p>Once you have fixed leases, use ‘get-fixleases.sh’ to download the fixleases file to your build directory so that they will be included in future builds.</p>
   <h2 id="check-the-logs">Check the Logs</h2>
-  <p>One of the great features of IPFire is the <em>Logs/Fw-Loggraphs</em> tabs in the Web GUI that allow you to look at traffic blocked by your firewall by IP, Port or Country. Using these loggraphs gives you a good way to look at how your firewall is protecting your network.</p>
+  <p>One of the great features of IPFire is the <em>Logs/Fw-Loggraphs</em> pages in the IPFire Web GUI that allow you to look at traffic blocked by your firewall by IP, Port or Country. Using these loggraphs gives you a good way to look at how your firewall is protecting your network and to gauge the effectiveness of changes to your firewall configuration.</p>
   <h2 id="use-location-block">Use Location Block</h2>
   <p>The Location Block feature in IPFire is an easy way to block a lot of traffic that you have no interest in seeing hit your network. It’s easy to configure the <em>block-all</em> mode with FireMyPi and allow the countries that make sense for you.</p>
-  <p>Use the <em>Logs/Fw-Loggraph (Country)</em> tab in the IPFire Web GUI and you will most likely see that your firewall is getting hits from places that you would never expect.</p>
+  <p>Use the <em>Logs/Fw-Loggraph (Country)</em> page in the IPFire Web GUI and you will most likely see that your firewall is getting hits from places that you would never expect.</p>
   <p>We recommend that you start with <em>block-all</em> and only allow your country at first. If this causes problems for sites that you need to access, you can incrementally allow those countries.</p>
   <p>You can fine tune the locations if needed by editing the <em>config/locationblock.yml</em> file.</p>
   <h2 id="use-ip-address-blocklists">Use IP Address Blocklists</h2>
-  <p>IP Address Blocklists are lists compiled by third parties of hostile actors on the internet that are out there searching for networks that they can penetrate.</p>
+  <p>IP Address Blocklists are lists of hostile actors on the internet compiled by third parties.</p>
   <p>So use the blocklists. Enable the <em>include_ipblocklist:</em> feature. You can fine tune the lists included by editing the <em>config/ipblocklist.yml</em> file.</p>
-  <p>When we were selecting the IP Address Blocklists to include by default, we enabled all of the blocklists and selected the ones that were getting hits for our test networks. Some of the lists got zero hits in our testing, possibly due to overlap in the lists. You may want to take a similar approach for your network.</p>
-  <p>Why not include all of the blocklists and leave it at that? The <em>include_blocklist:</em> feature does increase the boot time for your firewall as the blocklist rules have to be added when the firewall is started. So there is a time element that may need to be considered. But there would be no harm in enabling all of the blocklists if you want to do that.</p>
+  <p>The IP Address Blocklists enabled by default in <em>config/ipblocklist.yml</em> are just suggestions. Refer to <a href="https://www.ipfire.org/docs/configuration/firewall/ipblocklist" class="uri">https://www.ipfire.org/docs/configuration/firewall/ipblocklist</a> and the links on the <em>Network/IP Address Blocklists</em> page for more information on configuring IP Address Blocklists.</p>
   <h2 id="block-phone-home-devices">Block “Phone Home” Devices</h2>
-  <p>Devices that <em>Phone Home</em> can be of particular concern for your network for your privacy as well as for your network security. These devices may be smart TV’s, thermostats, outlets, speakers, cameras, essentially any of what are referred to as Internet of Things (IOT) devices. In one test with a smart TV on the network, we found that the smart TV was phoning home at a rate of about once per SECOND! Why does a smart TV need to be phoning home every second and what data is it sending???</p>
+  <p>Devices that <em>Phone Home</em> can be of particular concern for your network for your privacy as well as for your network security. These devices may be smart TV’s, thermostats, outlets, speakers, cameras, essentially any of what are referred to as Internet of Things (IOT) devices.</p>
   <p>So, how do you block devices that are phoning home? Create a firewall rule with the IPFire Web GUI to block the device.</p>
-  <p>First get the MAC address of the suspect device. You can find this in the <em>Network/DHCP Server</em> tab of the Web GUI probably in the <em>Current dynamic leases</em> section, unless you have assigned a fixed lease for the device. Once you have the MAC address, create a firewall rule to block that MAC address from accessing the internet.</p>
-  <p>To create the firewall rule, go to the <em>Firewall/Firewall Rules</em> tab and click on <em>New Rule</em>. In the <em>Source</em> section, enter or paste the MAC address for the device in the <em>Source address</em> box. In the <em>Destination</em> section, click on <em>Standard Networks</em> and select <em>RED</em> for the internet. In the <em>Remark</em> box, describe the phone home device, something like ‘That evil smart TV’. Click on the <em>Log Rule</em> checkbox so that you will be able to see the effects of the rule in the logs. Click on <em>Add</em> to add the rule and then on <em>Apply Changes</em> to put the rule into effect.</p>
-  <p>Once you have the phone home rule in effect, you can look at the <em>Logs/Fw-Loggraphs (IP)</em> tab to see the effects of the rule. In the case of the smart TV phone home that we tested, we saw that close to 90% of the IP address blocks by the firewall were coming from the smart TV.</p>
+  <p>First get the MAC address of the suspect device. You can find this on the <em>Network/DHCP Server</em> page of the IPFire Web GUI probably in the <em>Current dynamic leases</em> section, unless you have assigned a fixed lease for the device. Once you have the MAC address, create a firewall rule to block that MAC address from accessing the internet.</p>
+  <p>To create the firewall rule, go to the <em>Firewall/Firewall Rules</em> page and click on <em>New Rule</em>. In the <em>Source</em> section, enter or paste the MAC address for the device in the <em>Source address</em> box. In the <em>Destination</em> section, click on <em>Standard Networks</em> and select <em>RED</em> for the internet. In the <em>Remark</em> box, describe the device. Click on the <em>Log Rule</em> checkbox so that you will be able to see the effects of the rule in the logs. Click on <em>Add</em> to add the rule and then on <em>Apply Changes</em> to put the rule into effect.</p>
+  <p>Once you have the phone home rule in effect, you can look at the <em>Logs/Fw-Loggraphs (IP)</em> page to see the traffic blocked by the rule.</p>
   <h3 id="save-your-changes-1">Save Your Changes</h3>
   <p>When you have your <em>Phone Home</em> rules in place, use <em>get-fwrules.sh</em> to pull those rules into your build environment so that they will be in place the next time you use FireMyPi to build your firewall.</p>
   <hr />
-  <h1 id="firemypi-notes">FireMyPi Notes</h1>
+  <h1 id="notes">Notes</h1>
   <ul>
+  <li><p>FireMyPi does not, nor is it intended to, implement all of the configurations and settings in the IPFire setup program and IPFire Web GUI.</p></li>
+  <li><p>FireMyPi configures the GREEN and RED networks. If you need to add the ORANGE or BLUE networks you can do a build with FireMyPi and then use the IPFire ‘setup’ program to add the ORANGE or BLUE networks to your running firewall.</p></li>
   <li><p>FireMyPi modifies the IPFire configuration in order to build and run a customized IPFire image. As such, if the IPFire team changes the format of its configuration in the future, this may break things with FireMyPi.</p></li>
   <li><p>FireMyPi is intended to run builds as a regular user and prompts for your sudo password when needed. It is not recommended to run FireMyPi as the root user.</p></li>
+  <li><p>FireMyPi sets the same root and IPFire Web GUI admin passwords for all nodes that it builds. If you want different passwords for different nodes, you can change the passwords on a running node from the command line with the IPFire ‘setup’ program or ‘passwd root’ and ‘htpasswd /var/ipfire/auth/users admin’.</p></li>
   <li><p>FireMyPi config, image and portable builds are not encrypted. Use care and secure or encrypted transport methods when transferring any of these build products as they contain the secrets that you have created for your builds.</p></li>
-  <li><p>By default, FireMyPi uses <em>254</em> as the host number for the firewall and <em>245</em> as the host number for the test firewall. We use these host numbers because <em>254</em> puts the firewall at the top endpoint of the subnet address range and <em>245</em> is easy to remember for the test firewall as a companion to the production firewall. These host numbers are set in <em>config/system_vars.yml</em> so that they can be changed if your needs differ.</p></li>
-  <li><p>If a build is interrupted during the create image step, the mounts of the image file may not be removed. If this happens, you will see warnings in the <em>show-environment.sh</em> dashboard. The mounts will be cleaned up the next time you build an image. The warnings are there as a reminder to not &lt;Ctrl-C&gt; out of the build process.</p></li>
+  <li><p>FireMyPi allows you to build both test and production firewalls. Build test firewalls to bring up on your local network to verify settings and familiarize yourself with IPFire. Build production firewalls when you are ready to deploy.</p></li>
+  <li><p>By default, FireMyPi uses <em>254</em> as the host number for the firewall and <em>245</em> as the host number for the test firewall. We use these host numbers because <em>254</em> puts the firewall at the top endpoint of the subnet address range and <em>245</em> is easy to remember for the test firewall as a companion to the production firewall. These host numbers are set in <em>config/system_vars.yml</em> and can be changed if your needs differ.</p></li>
   <li><p>IPFire core images 182 and 183 have a problem with the dhcpcd daemon (version 10.0.4) staying running after initially getting an IP address from the ISP. The dhcpcd problem is apparently more likely to occur on aarch64 devices such as the Raspberry Pi. As a result, after the initial lease time, the firewall loses connectivity to the internet. This can be fixed with a reboot, manual restart of the red0 interface or using the <em>include_monitor_red0:</em> feature with the <em>monitor_red0_restart:</em> option. This bug has been fixed in dhcpcd (version 10.0.6) included in core image 184.</p></li>
-  <li><p>IPFire uses a self-signed certificate. You will need to accept the self-signed certificate in order to access the Web GUI.</p></li>
-  <li><p>When using <em>include_ipblocklist:</em> with FireMyPi, it will take a while for the public IP Address Blocklists to be downloaded after the first boot. If you are monitoring the Raspberry Pi console during the boot, you will see a delay and error messages during the firewall start as IPFire attempts to load the blocklists that are not yet downloaded. When the boot is completed, FireMyPi will start a script to monitor for the blocklist downloads and reload the firewall when the downloads have completed. As a result, on a first boot, you will not start to see packets blocked in the IP Address Blocklist Logs for about 20 minutes. The IP Address Blocklists included by default in <em>config/ipblocklist.yml</em> are those that we’ve found to have the most drops in our testing. The IPFire Web GUI <em>Firewall/IP Address Blocklists</em> tab has links to the blocklist providers where you can get information about the individual blocklists.</p></li>
-  <li><p>When using <em>include_ovpn:</em>, FireMyPi will create the necessary Certificate Authority (CA) and Host Certificates for the node. These are stored in the <em>secrets/ovpn</em> directory. The certificates are created once and reused on subsequent builds of the same node. This means that when a node is rebuilt the certificate used for Road Warrior remote admin access will stay the same and not need to be updated on mobile devices where it has been previously installed.</p></li>
+  <li><p>IPFire uses a self-signed certificate. You will need to accept the self-signed certificate in order to access the IPFire Web GUI.</p></li>
   <li><p>FireMyPi is built with a combination of shell scripts and ansible playbooks. Everything that FireMyPi does is available in clear text for your inspection.</p></li>
-  <li><p>FireMyPi sets the same root and Web GUI admin passwords for all nodes that it builds. If you want different passwords for different nodes, you can change the passwords on a running node with ‘passwd root’ and/or ‘htpasswd /var/ipfire/auth/users admin’ from the command line.</p></li>
   </ul>
   <hr />
   <h1 id="donate-to-firemypi">Donate to FireMyPi</h1>
@@ -1070,6 +1364,20 @@
   <li>The full text of the license can be found in the included LICENSE file or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.</li>
   <li>For the avoidance of doubt, FireMyPi is for personal use only and may not be used by or for any business in any way.</li>
   </ul>
+  <hr />
+  <h1 id="version-1">Version</h1>
+  <table>
+  <tbody>
+  <tr class="odd">
+  <td>Version:</td>
+  <td style="text-align: left;">v1.1</td>
+  </tr>
+  <tr class="even">
+  <td>Date:</td>
+  <td style="text-align: left;">Wed Jun 26 23:17:45 2024 -0600</td>
+  </tr>
+  </tbody>
+  </table>
 	</div>
   </body>
 </html>

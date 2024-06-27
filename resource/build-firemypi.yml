@@ -14,6 +14,11 @@
 ##
 
 #
+# Version:   v1.1
+# Date:      Wed Jun 26 23:17:45 2024 -0600
+#
+
+#
 # FireMyPi:  build-firemypi.yml
 #
 
@@ -48,16 +53,10 @@
     - import_tasks: build-prep.yml
     - import_tasks: build-info.yml
     - import_tasks: main-settings.yml
-    - import_tasks: udev.yml
     - import_tasks: ethernet.yml
-    - import_tasks: dhcp.yml
-      when: include_dhcp
-
-    - import_tasks: fwrules.yml
-      when: include_fwrules
-
-    - import_tasks: monitor-red0.yml
-      when: include_monitor_red0
+    - import_tasks: udev.yml
+    - import_tasks: dhcp-server.yml
+      when: include_dhcp_server
 
     - import_tasks: ddns.yml
       when: include_ddns
@@ -65,16 +64,31 @@
     - import_tasks: dnsaddservers.yml
       when: include_dnsaddservers
 
-    - import_tasks: locationblock.yml
-      when: include_locationblock
+    - import_tasks: dnssettings.yml
+      when: include_dnssettings
+
+    - import_tasks: fwrules.yml
+      when: include_fwrules
+
+    - import_tasks: hosts.yml
+      when: include_hosts
 
     - import_tasks: ipblocklist.yml
       when: include_ipblocklist
 
-    - import_tasks: vpn.yml
-      when: include_vpn
+    - import_tasks: locationblock.yml
+      when: include_locationblock
+
+    - import_tasks: monitor-red0.yml
+      when: include_monitor_red0
 
     - import_tasks: ovpn.yml
       when: include_ovpn
+
+    - import_tasks: pakfire.yml
+      when: include_pakfire
+
+    - import_tasks: vpn.yml
+      when: include_vpn
 
 ...

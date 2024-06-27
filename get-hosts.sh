@@ -19,11 +19,11 @@
 #
 
 #
-# FireMyPi:  get-fixleases.sh
+# FireMyPi:  get-hosts.sh
 #
 
 #
-# Get /var/ipfire/dhcp/fixleases from a running firewall and store it
+# Get /var/ipfire/main/hosts from a running firewall and store it
 # in the config directory.
 #
 
@@ -38,7 +38,7 @@ source fmp-common
 
 function usage()
 {
-	echo "Usage:  get-fixleases.sh {-n|--node NODE} [--ip IP]"
+	echo "Usage:  get-hosts.sh {-n|--node NODE} [--ip IP]"
 	exit 1
 }
 
@@ -70,7 +70,7 @@ done
 
 PREFIX=`get-config ${SYSTEMVARS} prefix`
 [[ ${PREFIX} ]] || abort "build prefix not found in ${SYSTEMVARS}"
-FIXLEASES="config/${PREFIX}${NODE}.fixleases"
+HOSTS="config/${PREFIX}${NODE}.hosts"
 
 if [[ -z ${IP} ]]
 then
@@ -80,27 +80,27 @@ fi
 clear
 header Get Fixleases
 
-echo -e "Get 'fixleases' file from a running node and copy it"
+echo -e "Get 'hosts' file from a running node and copy it"
 echo -e "to the config directory.\n"
 
-if [[ -e ${FIXLEASES} ]]
+if [[ -e ${HOSTS} ]]
 then
 	echo -e "${RED}*** WARNING ***${NC}\n"
-	echo -e "${RED}    ${FIXLEASES} already exists${NC}\n"
-	echo -e "Do you want to overwrite ${FIXLEASES}?\n"
-	read -p "Type 'yes' to overwrite the fixleases file: " YES
+	echo -e "${RED}    ${HOSTS} already exists${NC}\n"
+	echo -e "Do you want to overwrite ${HOSTS}?\n"
+	read -p "Type 'yes' to overwrite the hosts file: " YES
 	if [[ ${YES} != "yes" ]]
 	then
 		abort Cancelled.
 	else
-		cp "${FIXLEASES}" "${FIXLEASES}.save${DATE}${TIME}"
-		echo -e "\nBacked up current file to:  ${PREFIX}${NODE}.fixleases.save${DATE}${TIME}\n"
+		cp "${HOSTS}" "${HOSTS}.save${DATE}${TIME}"
+		echo -e "\nBacked up current file to:  ${PREFIX}${NODE}.hosts.save${DATE}${TIME}\n"
 	fi
 fi
 
-echo -e "Getting fixed leases from firewall at ${IP}...\n"
-echo "scp root@${IP}:/var/ipfire/dhcp/fixleases ${FIXLEASES}"
+echo -e "Getting host names from firewall at ${IP}...\n"
+echo "scp root@${IP}:/var/ipfire/main/hosts ${HOSTS}"
 
-scp root@${IP}:/var/ipfire/dhcp/fixleases ${FIXLEASES}
+scp root@${IP}:/var/ipfire/main/hosts ${HOSTS}
 
 echo -e "\nDone."
