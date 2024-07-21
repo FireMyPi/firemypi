@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.1
-# Date:      Wed Jun 26 23:17:45 2024 -0600
+# Version:   v1.2
+# Date:      Sun Jul 21 10:43:35 2024 -0600
 #
 
 #
@@ -33,7 +33,7 @@
 
 - name: Check if ovpn secrets exist
   stat:
-    path: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}"
+    path: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}"
   register: ovpnexists
 
 - name: Create ovpn secrets
@@ -88,26 +88,26 @@
   lineinfile:
     create: true
     path: "{{var_ipfire}}/ovpn/ovpnconfig"
-    line: "{{item.index}},{{item.offon}},{{item.name}},{{item.name}},host,cert,,,,,,,,,,,,,,,,,,,,,Configured by FireMyPi,,,,,,,dynamic,,,,,,,,,,HOTP/T30/6"
+    line: "{{item.index}},{{item.offon}},{{item.name}},{{item.name}},host,cert,,,,,,,,,,,,,,,,,,,,,Configured by FireMyPi,,,,,,,dynamic,,,,,,,,,pass,HOTP/T30/6"
     mode: '644'
   loop: "{{ovpn_roadwarrior}}"
   when: ovpn_roadwarrior_enabled
 
 - name: Install CA certificates
   copy:
-    src: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/ca"
+    src: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/ca"
     dest: "{{var_ipfire}}/ovpn"
     mode: preserve
 
 - name: Install host certificates
   copy:
-    src: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs"
+    src: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs"
     dest: "{{var_ipfire}}/ovpn"
     mode: preserve
 
 - name: Install certificate revocation list
   copy:
-    src: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/crls/cacrl.pem"
+    src: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/crls/cacrl.pem"
     dest: "{{var_ipfire}}/ovpn/crls/cacrl.pem"
     mode: preserve
 

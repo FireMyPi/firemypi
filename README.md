@@ -17,8 +17,8 @@ FireMyPi was designed with the ability to configure and connect multiple separat
 - Automatically configures the IPFire green0 and red0 interfaces on boot.
 - Allows you to use either a USB ethernet dongle or the Raspberry Pi
   internal wireless nic as the red0 interface.
-- Fixes an issue with the U-Boot configuration that did not allow some
-  Rasperry Pi 4B models to boot correctly.
+- Changes the U-Boot configuration so that Rasperry Pi 4B
+  models boot correctly. (See Notes)
 - Turns on file system journaling for the IPFire root file system on the
   micro sd card.
 - Turns on SSH on the green0 interface for headless access to the firewall
@@ -72,5 +72,5 @@ Refer to the [FireMyPi Administrator's Guide](doc/fmp-admin-guide.html) for comp
 ## Version
 |          |       |
 | -------- |:----- |
-|Version:  |v1.1|
-|Date:     |Wed Jun 26 23:17:45 2024 -0600  |
+|Version:  |v1.2|
+|Date:     |Sun Jul 21 10:43:35 2024 -0600  |

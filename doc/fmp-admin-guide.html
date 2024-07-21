@@ -135,7 +135,7 @@
   <li>Turns off the serial console for the Raspberry Pi in U-Boot.</li>
   <li>Automatically configures the IPFire green0 and red0 interfaces on boot.</li>
   <li>Allows you to use either a USB ethernet dongle or the Raspberry Pi internal wireless nic as the red0 interface.</li>
-  <li>Fixes an issue with the U-Boot configuration that did not allow some Rasperry Pi 4B models to boot correctly.</li>
+  <li>Changes the U-Boot configuration so that Rasperry Pi 4B models boot correctly. (See Notes)</li>
   <li>Turns on file system journaling for the IPFire root file system on the micro sd card.</li>
   <li>Turns on SSH on the green0 interface for headless access to the firewall from the internal network only.</li>
   <li>Limits the IPFire Web GUI to the green0 interface for internal access only.</li>
@@ -178,11 +178,11 @@
   <tbody>
   <tr class="odd">
   <td>Version:</td>
-  <td style="text-align: left;">v1.1</td>
+  <td style="text-align: left;">v1.2</td>
   </tr>
   <tr class="even">
   <td>Date:</td>
-  <td style="text-align: left;">Wed Jun 26 23:17:45 2024 -0600</td>
+  <td style="text-align: left;">Sun Jul 21 10:43:35 2024 -0600</td>
   </tr>
   </tbody>
   </table>
@@ -1346,7 +1346,23 @@
   <li><p>IPFire core images 182 and 183 have a problem with the dhcpcd daemon (version 10.0.4) staying running after initially getting an IP address from the ISP. The dhcpcd problem is apparently more likely to occur on aarch64 devices such as the Raspberry Pi. As a result, after the initial lease time, the firewall loses connectivity to the internet. This can be fixed with a reboot, manual restart of the red0 interface or using the <em>include_monitor_red0:</em> feature with the <em>monitor_red0_restart:</em> option. This bug has been fixed in dhcpcd (version 10.0.6) included in core image 184.</p></li>
   <li><p>IPFire uses a self-signed certificate. You will need to accept the self-signed certificate in order to access the IPFire Web GUI.</p></li>
   <li><p>FireMyPi is built with a combination of shell scripts and ansible playbooks. Everything that FireMyPi does is available in clear text for your inspection.</p></li>
+  <li><p>For the Raspberry Pi 4B, here are the issues addressed. We don’t have devices with board revisions 1.2 and 1.4 to test, so we don’t know what happens with those.</p></li>
   </ul>
+  <blockquote>
+  <p>Board Revision 1.1 - IPFire will boot and run, but assigns the micro SD card to <em>mmcblk1</em> instead of <em>mmcblk0</em>. This is not a problem, per se, but in FireMyPi when we turn on the journal for the root filesystem we are looking for <em>mmcblk0p3</em>. So for consistency, we want the micro SD card to be <em>mmcblk0</em>. The change to u-Boot fixes this so the the device boots with the micro SD card assigned to <em>mmcblk0</em>.</p>
+  </blockquote>
+  <blockquote>
+  <p>Board Revision 1.5 - IPFire will not boot. The kernel ends up in a loop reporting the following error message:</p>
+  </blockquote>
+  <blockquote>
+  <blockquote>
+  <p>mmc1: invalid bus width<br />
+  mmc1: error -22 whilst initializing SD card</p>
+  </blockquote>
+  </blockquote>
+  <blockquote>
+  <p>The change to u-Boot fixes this and the device boots successfully with the root filesystem at <em>mmcblk0p3</em> as desired.</p>
+  </blockquote>
   <hr />
   <h1 id="donate-to-firemypi">Donate to FireMyPi</h1>
   <p>Well, actually, we’re not set up to take donations, so you’re off the hook!</p>
@@ -1370,11 +1386,11 @@
   <tbody>
   <tr class="odd">
   <td>Version:</td>
-  <td style="text-align: left;">v1.1</td>
+  <td style="text-align: left;">v1.2</td>
   </tr>
   <tr class="even">
   <td>Date:</td>
-  <td style="text-align: left;">Wed Jun 26 23:17:45 2024 -0600</td>
+  <td style="text-align: left;">Sun Jul 21 10:43:35 2024 -0600</td>
   </tr>
   </tbody>
   </table>

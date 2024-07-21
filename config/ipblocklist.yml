@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.1
-# Date:      Wed Jun 26 23:17:45 2024 -0600
+# Version:   v1.2
+# Date:      Sun Jul 21 10:43:35 2024 -0600
 #
 
 #
@@ -29,27 +29,55 @@
 # Use quoted "on" and "off" for all values so that ansible doesn't
 # translate them to True and False.
 #
- 
-    ipblocklist_enable: "on"
-    ipblocklist_logging: "on"
+
+    ipblocklist_enabled: "on"
+    ipblocklist_log: "on"
 
     # See the Web GUI for more information on the blocklists
     # shown here.
-    alienvault: "off"
-    blocklist_de: "on"
-    bogon: "off"
-    bogon_full: "on"
-    ciarmy: "on"
-    dshield: "on"
-    emerging_compromised: "off"
-    emerging_fwrule: "off"
-    feodo_aggressive: "off"
-    feodo_ip: "off"
-    feodo_recommended: "off"
-    shodan: "off"
-    spamhaus_drop: "on"
-    spamhaus_edrop: "off"
-    tor_all: "off"
-    tor_exit: "on"
+
+    ipblocklists:
+
+    - listname: "BLOCKLIST_DE"
+      enable: "on"
+
+    - listname: "BOGON"
+      enable: "off"
+
+    - listname: "BOGON_FULL"
+      enable: "on"
+
+    - listname: "CIARMY"
+      enable: "on"
+
+    - listname: "DSHIELD"
+      enable: "on"
+
+    - listname: "EMERGING_COMPROMISED"
+      enable: "off"
+
+    - listname: "EMERGING_FWRULE"
+      enable: "off"
+
+    - listname: "FEODO_AGGRESSIVE"
+      enable: "off"
+
+    - listname: "FEODO_IP"
+      enable: "off"
+
+    - listname: "FEODO_RECOMMENDED"
+      enable: "off"
+
+    - listname: "SHODAN"
+      enable: "off"
+
+    - listname: "SPAMHAUS_DROP"
+      enable: "on"
+
+    - listname: "TOR_ALL"
+      enable: "off"
+
+    - listname: "TOR_EXIT"
+      enable: "on"
 
 ...

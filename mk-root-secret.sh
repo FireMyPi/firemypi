@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.1
-# Date:      Wed Jun 26 23:17:45 2024 -0600
+# Version:   v1.2
+# Date:      Sun Jul 21 10:43:35 2024 -0600
 #
 
 #
@@ -131,8 +131,8 @@ cat << HERE >> ${SECRETFILE}
 ##
 
 #
-# Version:   v1.1
-# Date:      Wed Jun 26 23:17:45 2024 -0600
+# Version:   v1.2
+# Date:      Sun Jul 21 10:43:35 2024 -0600
 #
 
 #

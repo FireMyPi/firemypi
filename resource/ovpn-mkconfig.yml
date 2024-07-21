@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.1
-# Date:      Wed Jun 26 23:17:45 2024 -0600
+# Version:   v1.2
+# Date:      Sun Jul 21 10:43:35 2024 -0600
 #
 
 #
@@ -27,96 +27,92 @@
 #
 
 
-- name: Load openvpn variables
-  include_vars:
-    file: "{{builddir}}/config/openvpn.yml"
-
 - name: Create secrets/ovpn/node directory
   file:
-    dest: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}"
+    dest: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}"
     state: directory
     mode: '700'
 
 - name: Create openssl directory
   file:
-    dest: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/openssl"
+    dest: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/openssl"
     state: directory
 
 - name: Create ovpn/ca directory
   file:
-    dest: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/ca"
+    dest: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/ca"
     state: directory
 
 - name: Create ovpn/certs directory
   file:
-    dest: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs"
+    dest: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs"
     state: directory
 
 - name: Create ovpn/crls directory
   file:
-    dest: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/crls"
+    dest: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/crls"
     state: directory
 
 - name: Copy temporary ovpn.cnf file
   template:
     src: "{{builddir}}/resource/ovpn-tempcnf.j2"
-    dest: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/openssl/temp.cnf"
+    dest: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/openssl/temp.cnf"
     mode: '644'
 
 - name: Initialize certificate database index.txt
   file:
-    dest: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs/index.txt"
+    dest: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs/index.txt"
     state: touch
     mode: '644'
 
 - name: Initialize certificate database index.txt.attr
   file:
-    dest: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs/index.txt.attr"
+    dest: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs/index.txt.attr"
     state: touch
     mode: '644'
 
 - name: Initialize certificate database serial
   lineinfile:
     create: true
-    path: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs/serial"
+    path: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs/serial"
     line: "01"
     mode: '644'
 
 - name: Create CA key and certificate
   shell:
-    cmd: openssl req -x509 -nodes -days 99999 -newkey rsa:4096 -sha512 -keyout cakey.pem -out cacert.pem -config {{builddir}}/secrets/ovpn/{{firemypi_hostname}}/openssl/temp.cnf -subj '/C={{ovpn_country}}/O={{firemypi_hostname}}/CN={{firemypi_fqdn}}'
-    chdir: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/ca"
+    cmd: openssl req -x509 -nodes -days 99999 -newkey rsa:4096 -sha512 -keyout cakey.pem -out cacert.pem -config {{builddir}}/secrets/ovpn/{{prefix}}{{node}}/openssl/temp.cnf -subj '/C={{ovpn_country}}/O={{prefix}}{{node}}/CN={{firemypi_fqdn}}'
+    chdir: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/ca"
 
 - name: Create TA key
   shell:
     cmd: openvpn --genkey secret ta.key
-    chdir: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs"
+    chdir: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs"
 
 - name: Create empty crl
   shell:
-    cmd: openssl ca -gencrl -out cacrl.pem -config {{builddir}}/secrets/ovpn/{{firemypi_hostname}}/openssl/temp.cnf
-    chdir: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/crls"
+    cmd: openssl ca -gencrl -out cacrl.pem -config {{builddir}}/secrets/ovpn/{{prefix}}{{node}}/openssl/temp.cnf
+    chdir: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/crls"
 
 - name: Create host certificate request
   shell:
-    cmd: openssl req -nodes -newkey rsa:4096 -keyout serverkey.pem -out serverreq.pem -extensions server -config {{builddir}}/secrets/ovpn/{{firemypi_hostname}}/openssl/temp.cnf -subj '/C={{ovpn_country}}/O={{firemypi_hostname}}/CN={{firemypi_fqdn}}'
-    chdir: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs"
+    cmd: openssl req -nodes -newkey rsa:4096 -keyout serverkey.pem -out serverreq.pem -extensions server -config {{builddir}}/secrets/ovpn/{{prefix}}{{node}}/openssl/temp.cnf -subj '/C={{ovpn_country}}/O={{prefix}}{{node}}/CN={{firemypi_fqdn}}'
+    chdir: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs"
 
 - name: Sign host certificate
   shell:
-    cmd: openssl ca -days 99999 -batch -notext -in serverreq.pem -out servercert.pem -extensions server -config {{builddir}}/secrets/ovpn/{{firemypi_hostname}}/openssl/temp.cnf
-    chdir: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs"
+    cmd: openssl ca -days 99999 -batch -notext -in serverreq.pem -out servercert.pem -extensions server -config {{builddir}}/secrets/ovpn/{{prefix}}{{node}}/openssl/temp.cnf
+    chdir: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs"
 
 - name: Create RoadWarrior certificate request
   shell:
-    cmd: openssl req -nodes -newkey rsa:4096 -keyout {{item.name}}key.pem -out {{item.name}}req.pem -config {{builddir}}/secrets/ovpn/{{firemypi_hostname}}/openssl/temp.cnf -subj '/C={{ovpn_country}}/O={{firemypi_hostname}}/CN={{item.name}}'
-    chdir: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs"
+    cmd: openssl req -nodes -newkey rsa:4096 -keyout {{item.name}}key.pem -out {{item.name}}req.pem -config {{builddir}}/secrets/ovpn/{{prefix}}{{node}}/openssl/temp.cnf -subj '/C={{ovpn_country}}/O={{prefix}}{{node}}/CN={{item.name}}'
+    chdir: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs"
   loop: "{{ovpn_roadwarrior}}"
 
 - name: Sign RoadWarrior certificate
   shell:
-    cmd: openssl ca -days 99999 -batch -notext -in {{item.name}}req.pem -out {{item.name}}cert.pem -config {{builddir}}/secrets/ovpn/{{firemypi_hostname}}/openssl/temp.cnf
-    chdir: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs"
+    cmd: openssl ca -days 99999 -batch -notext -in {{item.name}}req.pem -out {{item.name}}cert.pem -config {{builddir}}/secrets/ovpn/{{prefix}}{{node}}/openssl/temp.cnf
+    chdir: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs"
   loop: "{{ovpn_roadwarrior}}"
 
 - name: Load openvpn variables
@@ -125,8 +121,8 @@
 
 - name: Create RoadWarrior pkcs12 certificate files
   shell:
-    cmd: openssl pkcs12 -export -inkey {{item.name}}key.pem -in {{item.name}}cert.pem -name {{item.name}} -passout "pass:{{ovpn_p12_password}}" -certfile "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/ca/cacert.pem" -caname "{{firemypi_hostname}} CA" -out {{item.name}}.p12
-    chdir: "{{builddir}}/secrets/ovpn/{{firemypi_hostname}}/certs"
+    cmd: openssl pkcs12 -export -inkey {{item.name}}key.pem -in {{item.name}}cert.pem -name {{item.name}} -passout "pass:{{ovpn_p12_password}}" -certfile "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/ca/cacert.pem" -caname "{{prefix}}{{node}} CA" -out {{item.name}}.p12
+    chdir: "{{builddir}}/secrets/ovpn/{{prefix}}{{node}}/certs"
   loop: "{{ovpn_roadwarrior}}"
 
 ...
