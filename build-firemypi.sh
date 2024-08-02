@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.2
-# Date:      Sun Jul 21 10:43:35 2024 -0600
+# Version:   v1.3
+# Date:      Thu Aug 1 21:20:37 2024 -0600
 #
 
 # 
@@ -59,6 +59,7 @@ function add-var()
 check-license  || exit 1
 
 #### Parse args
+
 if [[ $# -gt 0 ]]
 then
 	HAVEARGS=yes
@@ -154,7 +155,7 @@ then
 	exit 0
 fi
 
-#### Program checks.
+#### Program checks
 
 [[ ${NODE} == none ]] && abort "must set node using -n|--node {NODE}"
 
@@ -221,9 +222,12 @@ then
 	fi
 fi
 
-#### Run build
+#### Set extra variables for ansible-playbook
 
 add-var "archive" "${ARCHIVE}"
+add-var "archivebase" "${ARCHIVEBASE}"
+add-var "image" "${IMAGE}"
+add-var "imagebase" "${IMAGEBASE}"
 add-var "user" "${USER}"
 add-var "node" "${NODE}"
 add-var "builddir" "${DNAME}"
@@ -231,6 +235,8 @@ add-var "date" "${DATE}"
 add-var "time" "${TIME}"
 add-var "test_prod" "${TEST_PROD}"
 add-var "include_portable" "${BUILD_PORTABLE}"
+
+#### Run build
 
 if [[ ${BUILD_IPFIRE} == yes ]]
 then
@@ -246,7 +252,8 @@ then
 
 	# save build parameters
 	mkdir -p `dirname ${PARAMS}`
-	echo "options: ${OPTIONS}" > ${PARAMS}
+	echo "Build Config" > ${PARAMS}
+	echo "options: ${OPTIONS}" >> ${PARAMS}
 	echo "variables: ${VARS}" >> ${PARAMS}
 
 	PLAYBOOK="build-firemypi.yml"
@@ -261,7 +268,7 @@ then
 		abort "Create config failed."
 	fi
 
-#### Create tar archive.
+#### Create tar archive
 
 	# Set group:user to 99:99 which is nobody:nobody on ipfire.
 	# This prevents file permission problems when the config is
@@ -282,13 +289,14 @@ then
 	PLAYBOOK="create-image.yml"
 	[[ -r ${ARCHIVE} ]] || abort "Archive '${ARCHIVE}' not found or not readable. "
 
-	add-var "archive" "${ARCHIVE}"
-	add-var "image" "${IMAGE}"
 	message "Creating image from config '${ARCHIVE}'..."
 
 	message "Creating image with parameters:"
 	message "options: ${OPTIONS}"
 	message "variables: ${VARS}"
+	echo "Create Image" >> ${PARAMS}
+	echo "options: ${OPTIONS}" >> ${PARAMS}
+	echo "variables: ${VARS}" >> ${PARAMS}
 
 	echo -e "\nNeed to become root to create the image."
 	echo -e "\nEnter sudo password or <Ctrl-C> to exit:"

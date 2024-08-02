@@ -55,7 +55,7 @@
       #
 
 
-      if [ -e /var/ipfire/main/firemypi-pakfire-addons.installed ]
+      if [ -e /root/firemypi-pakfire-addons.installed ]
       then
         echo "FireMyPi - pakfire add-on packages already installed."
         exit 0
@@ -77,8 +77,19 @@
     path: "{{targetdir}}/root/firemypi-pakfire.sh"
     line: |
 
-      touch /var/ipfire/main/firemypi-pakfire-addons.installed
+      touch /root/firemypi-pakfire-addons.installed
 
+- name: Create package install script
+  lineinfile:
+    path: "{{targetdir}}/root/firemypi-pakfire.sh"
+    line: "  echo '/opt/pakfire/pakfire install {{item.package}} -y' >> /root/firemypi-pakfire-addons.installed"
+  loop: "{{pakfire_addons}}"
+
+- name: Create package install script
+  lineinfile:
+    path: "{{targetdir}}/root/firemypi-pakfire.sh"
+    line: |
+      
       fi
       # Done.
 

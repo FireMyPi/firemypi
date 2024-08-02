@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.2
-# Date:      Sun Jul 21 10:43:35 2024 -0600
+# Version:   v1.3
+# Date:      Thu Aug 1 21:20:37 2024 -0600
 #
 
 #
@@ -28,7 +28,7 @@
 #
 
 
-- name: FireMyPi building IPFire image
+- name: FireMyPi Create IPFire Image
   hosts: localhost
   connection: local
   gather_facts: false
@@ -45,7 +45,6 @@
     temp: "{{nodedir}}/temp"
     config_file: "{{archive}}"
     image_file: "{{image}}"
-
     temp_image: "{{temp}}/temp-core-image-{{prefix}}{{node}}-{{date}}.img"
 
   tasks:

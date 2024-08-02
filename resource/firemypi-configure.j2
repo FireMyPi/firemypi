@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.2
-# Date:      Sun Jul 21 10:43:35 2024 -0600
+# Version:   v1.3
+# Date:      Thu Aug 1 21:20:37 2024 -0600
 #
 
 #
@@ -47,7 +47,7 @@
 #
 
 CONFIG=firemypi-core{{core_number}}-{{prefix}}{{node}}-config-{{test_prod}}-{{date}}
-LOG=/firemypi-configure.log
+LOG=/root/firemypi-configure.log
 
 function writelog()
 {
@@ -55,7 +55,7 @@ function writelog()
 }
 
 # Exit if configuration was already installed...
-if [ -e /var/ipfire/main/$CONFIG.installed ]
+if [ -e /root/$CONFIG.installed ]
 then
 	echo ""
 	echo "Node is configured with $CONFIG..."
@@ -197,7 +197,7 @@ fi
 #
 echo "Setting run-once flag for configure-firemypi..."
 writelog "Setting run-once flag for configure-firemypi..."
-touch /var/ipfire/main/$CONFIG.installed
+touch /root/$CONFIG.installed
 #read -p "<Enter> to continue..."
 
 

@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.2
-# Date:      Sun Jul 21 10:43:35 2024 -0600
+# Version:   v1.3
+# Date:      Thu Aug 1 21:20:37 2024 -0600
 #
 
 #
@@ -40,7 +40,7 @@
 LOG=/var/log/udev-network-hotplug-firemypi.log
 
 # Only run if FireMyPi.
-if [[ ! -f "/firemypi-config.info" ]]
+if [[ ! -f "/root/firemypi-config.info" ]]
 then
 	exit 1
 fi

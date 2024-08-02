@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.2
-# Date:      Sun Jul 21 10:43:35 2024 -0600
+# Version:   v1.3
+# Date:      Thu Aug 1 21:20:37 2024 -0600
 #
 
 #
@@ -33,13 +33,16 @@
     create: true
     line: |
       #
-      # Node {{node}} built on {{date}} at {{time}} by {{user}}.
+      # FireMyPi node {{prefix}}{{node}} built on {{date}} at {{time}} by {{user}}.
       #
-      # FireMyPi Version:  v1.2
-      # Version Date:      Sun Jul 21 10:43:35 2024 -0600
+      # FireMyPi Version:  v1.3
+      # Version Date:      Thu Aug 1 21:20:37 2024 -0600
+      #
+      # Config File:       {{archivebase}}
+      # Image File:        {{imagebase}}
       #
 
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
 
 - name: Copy license.accepted
   lineinfile:
@@ -47,10 +50,10 @@
       #
       # license.accepted
       #
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
 
 - name: Copy license.accepted
-  shell: "cat {{builddir}}/license.accepted >> {{targetdir}}/firemypi-config.info"
+  shell: "cat {{builddir}}/license.accepted >> {{targetdir}}/root/firemypi-config.info"
 
 - name: Copy system_vars.yml
   lineinfile:
@@ -58,10 +61,10 @@
       #
       # system_vars.yml
       #
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
 
 - name: Copy system_vars.yml
-  shell: "cat {{builddir}}/config/system_vars.yml >> {{targetdir}}/firemypi-config.info"
+  shell: "cat {{builddir}}/config/system_vars.yml >> {{targetdir}}/root/firemypi-config.info"
 
 - name: Copy {{prefix}}{{node}}_vars.yml
   lineinfile:
@@ -69,10 +72,10 @@
       #
       # {{prefix}}{{node}}_vars.yml
       #
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
 
 - name: Copy {{prefix}}{{node}}_vars.yml
-  shell: "cat {{builddir}}/config/{{prefix}}{{node}}_vars.yml >> {{targetdir}}/firemypi-config.info"
+  shell: "cat {{builddir}}/config/{{prefix}}{{node}}_vars.yml >> {{targetdir}}/root/firemypi-config.info"
 
 - name: Copy dnsaddservers.yml
   lineinfile:
@@ -80,11 +83,11 @@
       #
       # dnsaddservers.yml
       #
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
   when: include_dnsaddservers
 
 - name: Copy dnsaddservers.yml
-  shell: "cat {{builddir}}/config/dnsaddservers.yml >> {{targetdir}}/firemypi-config.info"
+  shell: "cat {{builddir}}/config/dnsaddservers.yml >> {{targetdir}}/root/firemypi-config.info"
   when: include_dnsaddservers
 
 - name: Copy ipblocklist.yml
@@ -93,11 +96,11 @@
       #
       # ipblocklist.yml
       #
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
   when: include_ipblocklist
 
 - name: Copy ipblocklist.yml
-  shell: "cat {{builddir}}/config/ipblocklist.yml >> {{targetdir}}/firemypi-config.info"
+  shell: "cat {{builddir}}/config/ipblocklist.yml >> {{targetdir}}/root/firemypi-config.info"
   when: include_ipblocklist
 
 - name: Copy locationblock.yml
@@ -106,11 +109,11 @@
       #
       # locationblock.yml
       #
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
   when: include_locationblock
 
 - name: Copy locationblock.yml
-  shell: "cat {{builddir}}/config/locationblock.yml >> {{targetdir}}/firemypi-config.info"
+  shell: "cat {{builddir}}/config/locationblock.yml >> {{targetdir}}/root/firemypi-config.info"
   when: include_locationblock
 
 - name: Copy openvpn.yml
@@ -119,11 +122,11 @@
       #
       # openvpn.yml
       #
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
   when: include_ovpn
 
 - name: Copy openvpn.yml
-  shell: "cat {{builddir}}/config/openvpn.yml >> {{targetdir}}/firemypi-config.info"
+  shell: "cat {{builddir}}/config/openvpn.yml >> {{targetdir}}/root/firemypi-config.info"
   when: include_ovpn
 
 - name: Copy pakfire.yml
@@ -132,11 +135,11 @@
       #
       # pakfire.yml
       #
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
   when: include_pakfire
 
 - name: Copy pakfire.yml
-  shell: "cat {{builddir}}/config/pakfire.yml >> {{targetdir}}/firemypi-config.info"
+  shell: "cat {{builddir}}/config/pakfire.yml >> {{targetdir}}/root/firemypi-config.info"
   when: include_pakfire
 
 - name: Copy vpnactivenodes.yml
@@ -145,11 +148,11 @@
       #
       # vpnactivenodes.yml
       #
-    path: "{{targetdir}}/firemypi-config.info"
+    path: "{{targetdir}}/root/firemypi-config.info"
   when: include_vpn
 
 - name: Copy vpnactivenodes.yml
-  shell: "cat {{builddir}}/config/vpnactivenodes.yml >> {{targetdir}}/firemypi-config.info"
+  shell: "cat {{builddir}}/config/vpnactivenodes.yml >> {{targetdir}}/root/firemypi-config.info"
   when: include_vpn
 
 ...
