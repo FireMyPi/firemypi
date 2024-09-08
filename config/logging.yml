@@ -1,0 +1,60 @@
+---
+
+##
+## Copyright © 2020-2024 David Čuka and Stephen Čuka All Rights Reserved.
+##
+## FireMyPi is licensed under the Creative Commons Attribution-NonCommercial-
+## NoDerivatives 4.0 International License (CC BY-NC-ND 4.0).
+##
+## The full text of the license can be found in the included LICENSE file 
+## or at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en.
+##
+## For the avoidance of doubt, FireMyPi is for personal use only and may not 
+## be used by or for any business in any way.
+##
+
+#
+# Version:   v1.4
+# Date:      Sat Sep 7 19:54:36 2024 -0600
+#
+
+#
+# FireMyPi:  logsettings.yml
+#
+
+#
+# Set the options for Log Viewing, Log Summaries and Remote Logging.
+#
+# These are settings for the 'Logs/Log Settings' page in the WebGUI.
+#
+# Uncomment the variable with the value that you desire in the blocks
+# below.  Only one variable should be uncommented for each block.  The
+# values in the template are the default values for IPFire.
+#
+
+    #log_reverseview: "on"
+    log_reverseview: "off"
+
+    #log_linesperpage: 15
+    #log_linesperpage: 50
+    #log_linesperpage: 100
+    log_linesperpage: 150
+    #log_linesperpage: 200
+    #log_linesperpage: 250
+    #log_linesperpage: 500
+
+    log_keepsummaries: 56
+
+    log_summarydetail: "Low"
+    #log_summarydetail: "Medium"
+    #log_summarydetail: "High"
+
+    #log_remoteenabled: "on"
+    log_remoteenabled: "off"
+
+    log_remoteserver: "0.0.0.0"
+
+    #log_remoteprotocol: tcp
+    log_remoteprotocol: udp
+
+...

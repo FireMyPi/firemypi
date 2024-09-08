@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.3
-# Date:      Thu Aug 1 21:20:37 2024 -0600
+# Version:   v1.4
+# Date:      Sat Sep 7 19:54:36 2024 -0600
 #
 
 # 
@@ -44,6 +44,7 @@ FORCE_BUILD=no
 HAVEARGS=no
 SHOW=no
 BUILD_PORTABLE=false
+DEBUG=false
 
 function add-option()
 {
@@ -112,9 +113,9 @@ do
 			;;
 
 		--debug)
-			add-option "--check"
-			add-option "--diff"
-			add-option "-vvvvv"
+			DEBUG=true
+			add-option "-vv"
+#			add-option "-vvvvvv"
 			;;
 
 		*)
@@ -240,9 +241,12 @@ add-var "include_portable" "${BUILD_PORTABLE}"
 
 if [[ ${BUILD_IPFIRE} == yes ]]
 then
-	message "Running build with parameters:"
-	message "options: ${OPTIONS}"
-	message "variables: ${VARS}"
+	if [[ ${DEBUG} == true ]]
+	then
+		message "Running build with parameters:"
+		message "options: ${OPTIONS}"
+		message "variables: ${VARS}"
+	fi
 
 	# clean up any previous build
 	rm -f ${ARCHIVE}
@@ -291,9 +295,13 @@ then
 
 	message "Creating image from config '${ARCHIVE}'..."
 
-	message "Creating image with parameters:"
-	message "options: ${OPTIONS}"
-	message "variables: ${VARS}"
+	if [[ ${DEBUG} == true ]]
+	then
+		message "Creating image with parameters:"
+		message "options: ${OPTIONS}"
+		message "variables: ${VARS}"
+	fi
+
 	echo "Create Image" >> ${PARAMS}
 	echo "options: ${OPTIONS}" >> ${PARAMS}
 	echo "variables: ${VARS}" >> ${PARAMS}

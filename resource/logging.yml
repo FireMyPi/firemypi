@@ -19,15 +19,26 @@
 #
 
 #
-# FireMyPi:  vpnpsk-secret.yml
+# FireMyPi:  logging.yml
 #
 
 #
-# The pre-shared key for ipsec vpns.
-#
-# Rename this template to vpnpsk-secret.yml before use.
+# This playbook creates the log settings configuration.
 #
 
-    vpn_psk: "VPN PRE-SHARED KEY"
+
+- name: Get log settings
+  include_vars:
+    file: "{{builddir}}/config/logging.yml"
+
+- name: Create the logging directory
+  file:
+    path: "{{var_ipfire}}/logging"
+    state: directory
+
+- name: copy logging configuration file
+  template:
+    src: "{{builddir}}/resource/logging-settings.j2"
+    dest: "{{var_ipfire}}/logging/settings"
 
 ...

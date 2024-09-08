@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.3
-# Date:      Thu Aug 1 21:20:37 2024 -0600
+# Version:   v1.4
+# Date:      Sat Sep 7 19:54:36 2024 -0600
 #
 
 # 
@@ -204,7 +204,7 @@ function show-ip-numbers()
 {
 	printf "%-32s" "The test firewall IP is:"
 	printf "${GRN}%-20s${NC}\n" 192.168.${NODE}.${TESTIP}
-	printf "%-32s" "The firewall IP is:"
+	printf "%-32s" "The prod firewall IP is:"
 	printf "${GRN}%-20s${NC}\n" 192.168.${NODE}.${PRODIP}
 	echo ""
 }

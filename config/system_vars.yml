@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.3
-# Date:      Thu Aug 1 21:20:37 2024 -0600
+# Version:   v1.4
+# Date:      Sat Sep 7 19:54:36 2024 -0600
 #
 
 #
@@ -177,6 +177,11 @@
     # Turn on Location Block.  Configure in 'config/locationblock.yml'.
     #include_locationblock: true
     include_locationblock: false
+
+    # Include log settings as seen on the 'Logs/Log Settings' page in the
+    # WebGUI.  Log settings are configured in 'config/logging.yml'.
+    # include_logging: true
+    include_logging: false
 
     # Monitor the status of the red0 interface and write results to
     # '/var/log/monitor-red0.log'.

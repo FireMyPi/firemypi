@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.3
-# Date:      Thu Aug 1 21:20:37 2024 -0600
+# Version:   v1.4
+# Date:      Sat Sep 7 19:54:36 2024 -0600
 #
 
 #
@@ -78,6 +78,9 @@
 
     - import_tasks: locationblock.yml
       when: include_locationblock
+
+    - import_tasks: logging.yml
+      when: include_logging
 
     - import_tasks: monitor-red0.yml
       when: include_monitor_red0
