@@ -72,5 +72,5 @@ Refer to the [FireMyPi Administrator's Guide](doc/fmp-admin-guide.html) for comp
 ## Version
 |          |       |
 | -------- |:----- |
-|Version:  |v1.4|
-|Date:     |Sat Sep 7 19:54:36 2024 -0600  |
+|Version:  |v1.5|
+|Date:     |Sat Oct 12 12:48:47 2024 -0600  |

@@ -7,7 +7,7 @@ oid_section			= new_oids
 default_ca			= openvpn
 
 [ openvpn ]
-dir				= {{builddir}}/secrets/ovpn/{{firemypi_hostname}}
+dir				= {{builddir}}/secrets/ovpn/{{prefix}}{{node}}
 certs				= $dir/certs
 crl_dir				= $dir/crl
 database			= $dir/certs/index.txt
