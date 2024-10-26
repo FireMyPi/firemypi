@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.5
-# Date:      Sat Oct 12 12:48:47 2024 -0600
+# Version:   v1.6
+# Date:      Fri Oct 25 18:59:04 2024 -0600
 #
 
 #
@@ -131,8 +131,8 @@ cat << HERE >> ${SECRETFILE}
 ##
 
 #
-# Version:   v1.5
-# Date:      Sat Oct 12 12:48:47 2024 -0600
+# Version:   v1.6
+# Date:      Fri Oct 25 18:59:04 2024 -0600
 #
 
 #

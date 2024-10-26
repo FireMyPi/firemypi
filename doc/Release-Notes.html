@@ -17,6 +17,7 @@
 <li><a href="#firemypi-release-notes"
 id="toc-firemypi-release-notes">FireMyPi Release Notes</a>
 <ul>
+<li><a href="#version-1.6" id="toc-version-1.6">Version 1.6</a></li>
 <li><a href="#version-1.5" id="toc-version-1.5">Version 1.5</a></li>
 <li><a href="#version-1.4" id="toc-version-1.4">Version 1.4</a></li>
 <li><a href="#version-1.3" id="toc-version-1.3">Version 1.3</a></li>
@@ -33,6 +34,27 @@ id="toc-firemypi-release-notes">FireMyPi Release Notes</a>
 
 	<div class="body">
 		<h1 id="firemypi-release-notes">FireMyPi Release Notes</h1>
+<h2 id="version-1.6">Version 1.6</h2>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Version:</td>
+<td style="text-align: left;">v1.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Date:</td>
+<td style="text-align: left;">Fri Oct 25 18:59:04 2024 -0600</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>Turn on journaling for root in ‘fsresize’ instead of ‘partresize’.
+This fixes a problem that showed up with core 189 where the root file
+system would get corrupted when journaling was turned on.</li>
+<li>To migrate to this version, ‘git pull’ the changes or save your
+‘config’ and ‘secrets’ directories, delete your current firemypi
+directory and clone or download the new version from github.</li>
+</ol>
 <h2 id="version-1.5">Version 1.5</h2>
 <table>
 <tbody>

@@ -27,7 +27,7 @@
   include_vars:
     file: "{{builddir}}/config/pakfire.yml"
 
-- name: Create package install script
+- name: Create package install script - step 1
   lineinfile:
     create: true
     path: "{{targetdir}}/root/firemypi-pakfire.sh"
@@ -66,26 +66,26 @@
 
     mode: '744'
 
-- name: Create package install script
+- name: Create package install script - step 2
   lineinfile:
     path: "{{targetdir}}/root/firemypi-pakfire.sh"
     line: "  /opt/pakfire/pakfire install {{item.package}} -y"
   loop: "{{pakfire_addons}}"
 
-- name: Create package install script
+- name: Create package install script - step 3
   lineinfile:
     path: "{{targetdir}}/root/firemypi-pakfire.sh"
     line: |
 
       touch /root/firemypi-pakfire-addons.installed
 
-- name: Create package install script
+- name: Create package install script - step 4
   lineinfile:
     path: "{{targetdir}}/root/firemypi-pakfire.sh"
     line: "  echo '/opt/pakfire/pakfire install {{item.package}} -y' >> /root/firemypi-pakfire-addons.installed"
   loop: "{{pakfire_addons}}"
 
-- name: Create package install script
+- name: Create package install script - step 5
   lineinfile:
     path: "{{targetdir}}/root/firemypi-pakfire.sh"
     line: |
