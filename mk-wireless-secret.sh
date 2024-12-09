@@ -14,8 +14,8 @@
 ##
 
 #
-# Version:   v1.6
-# Date:      Fri Oct 25 18:59:04 2024 -0600
+# Version:   v1.7
+# Date:      Mon Dec 9 16:27:24 2024 -0700
 #
 
 #
@@ -160,8 +160,8 @@ cat << HERE >> ${SECRETS}/${NODEFILE}
 ##
 
 #
-# Version:   v1.6
-# Date:      Fri Oct 25 18:59:04 2024 -0600
+# Version:   v1.7
+# Date:      Mon Dec 9 16:27:24 2024 -0700
 #
 
 #
